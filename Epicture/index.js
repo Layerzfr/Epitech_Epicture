@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { AppRegistry, StyleSheet, Text, View, Button, Linking, AsyncStorage, Image } from "react-native";
+import { SearchBar } from 'react-native-elements';
 
 import { authorize } from 'react-native-app-auth';
 
 
 class App extends Component {
 
-    state = { logged: false };
+    state = { logged: false, userInfo: null, search: '', photos: null };
 
     componentDidMount() {
 
@@ -50,7 +51,7 @@ class App extends Component {
                     'token': token,
                 }).then(r => {
                     this.setState(previousState => (
-                        { logged: true }
+                        { logged: true, userInfo: this.getUserInfo() }
                     ));
                     console.log("done");
                 });
@@ -101,8 +102,8 @@ class App extends Component {
 
         let userInfo;
 
-        console.log(username);
-        console.log(token);
+        // console.log(username);
+        // console.log(token);
 
         fetch('https://api.imgur.com/3/account/' + username, {
             method: 'GET',
@@ -115,6 +116,11 @@ class App extends Component {
             .then((responseJson) => {
                 userInfo = responseJson;
                 // console.log(userInfo);
+                if (this.state.userInfo !== null) {
+                    this.setState(previousState => (
+                        {userInfo: userInfo}
+                    ));
+                }
                 return userInfo;
             })
             .catch((error) => {
@@ -125,35 +131,72 @@ class App extends Component {
     async disconnect() {
         await AsyncStorage.clear();
         this.setState(previousState => (
-            { logged: false }
+            { logged: false, userInfo: null }
         ));
     }
+
+    updateSearch(search) {
+        // let token = this.getToken();
+        // console.log(token);
+
+    };
 
     render() {
 
         if (this.state.logged) {
-            let userInfo = this.getUserInfo();
-            console.log('user info : ', userInfo);
-            return (
-                <View style={styles.container}>
-                    {/*<Image*/}
-                    {/*    style={{width: 50, height: 50}}*/}
-                    {/*    source={this.getUserInfo().data.avatar}*/}
-                    {/*/>*/}
-                    <Text style={styles.welcome}>Welcome to React Native!</Text>
-                    <Button title="Get my token" onPress={() => {
-                        this.getToken()
-                    }}/>
-                    {/*<Button title="Get user info" onPress={ ()=>{ this.getUserInfo()}} />*/}
-                    <Button title="Se déconnecter" onPress={() => {
-                        this.disconnect()
-                    }}/>
-                </View>
-            );
+            // let userInfo = this.getUserInfo();
+            let userinfo = this.state.userInfo["data"];
+            if(userinfo !== undefined) {
+                console.log(userinfo);
+                return (
+                    <View>
+                        <SearchBar
+                            placeholder="Type Here..."
+                            onChangeText={this.updateSearch}
+                            value={this.state.search}
+                        />
+                        <Image
+                            style={{width: 50, height: 50}}
+                            source={{uri: userinfo["cover"]}}
+                        />
+                        <Image
+                            style={{width: 50, height: 50}}
+                            source={{uri: userinfo["avatar"]}}
+                        />
+                        <Text style={styles.welcome}>Welcome {userinfo["url"]} to React Native!</Text>
+                        <Button title="Se déconnecter" onPress={() => {
+                            this.disconnect()
+                        }}/>
+                    </View>
+                );
+            } else {
+
+                return (
+                    <View style={styles.container}>
+                        <Text style={styles.welcome}>Welcome to React Native!</Text>
+                        <SearchBar
+                            placeholder="Type Here..."
+                            onChangeText={this.updateSearch}
+                            value={this.state.search}
+                        />
+                        <Button title="Get my token" onPress={() => {
+                            this.getToken()
+                        }}/>
+                        <Button title="Se déconnecter" onPress={() => {
+                            this.disconnect()
+                        }}/>
+                    </View>
+                );
+            }
         } else {
             return (
                 <View style={styles.container}>
                     <Text style={styles.welcome}>Welcome to React Native!</Text>
+                    <SearchBar
+                        placeholder="Type Here..."
+                        onChangeText={this.updateSearch}
+                        value={this.state.search}
+                    />
                     <Button title="Login" onPress={() => {
                         Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=52cbd80405a2505&response_type=token')
                     }}/>
@@ -164,12 +207,12 @@ class App extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F5FCFF",
-    },
+    // container: {
+    //     flex: 1,
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     backgroundColor: "#F5FCFF",
+    // },
     welcome: {
         fontSize: 20,
         textAlign: "center",
