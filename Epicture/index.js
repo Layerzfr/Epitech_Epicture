@@ -1,17 +1,14 @@
-import React, { Component } from "react";
-import { AppRegistry, StyleSheet, Text, View, Button, Linking, AsyncStorage, Image } from "react-native";
-import { SearchBar } from 'react-native-elements';
+import React, {Component} from "react";
+import {AppRegistry, StyleSheet, Text, View, Button, Linking, AsyncStorage, Image, ScrollView} from "react-native";
+import {SearchBar} from 'react-native-elements';
 
-import { authorize } from 'react-native-app-auth';
-
+import {authorize} from 'react-native-app-auth';
 
 class App extends Component {
 
-    state = { logged: false, userInfo: null, search: '', photos: null };
+    state = {logged: false, userInfo: null, search: '', photos: null, images: null, searchImages: null};
 
     componentDidMount() {
-
-
         Linking.getInitialURL().then((url) => {
             let username;
             let userId;
@@ -36,22 +33,15 @@ class App extends Component {
                             break;
 
                     }
-
-
-                    // if(match[1] == "access_token") {
-                    //     this.saveItem('userToken', match[2]).then(r => {
-                    //         console.log("done");
-                    //     });
-                    // }
-                        console.log(match[1], match[2])
+                    console.log(match[1], match[2])
                 }
                 this.saveItem('userToken', {
-                    'userId' : userId,
+                    'userId': userId,
                     'username': username,
                     'token': token,
                 }).then(r => {
                     this.setState(previousState => (
-                        { logged: true, userInfo: this.getUserInfo() }
+                        {logged: true, userInfo: this.getUserInfo()}
                     ));
                     console.log("done");
                 });
@@ -91,19 +81,13 @@ class App extends Component {
         await AsyncStorage.getItem('username').then((token) => {
             userName = token;
         });
-        // console.log(userToken);
         return userName;
     }
 
-    async getUserInfo()
-    {
+    async getUserInfo() {
         let username = await this.getUserName();
-        let token =  await this.getToken();
-
+        let token = await this.getToken();
         let userInfo;
-
-        // console.log(username);
-        // console.log(token);
 
         fetch('https://api.imgur.com/3/account/' + username, {
             method: 'GET',
@@ -115,7 +99,6 @@ class App extends Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 userInfo = responseJson;
-                // console.log(userInfo);
                 if (this.state.userInfo !== null) {
                     this.setState(previousState => (
                         {userInfo: userInfo}
@@ -131,28 +114,112 @@ class App extends Component {
     async disconnect() {
         await AsyncStorage.clear();
         this.setState(previousState => (
-            { logged: false, userInfo: null }
+            {logged: false, userInfo: null}
         ));
     }
 
-    updateSearch(search) {
-        // let token = this.getToken();
-        // console.log(token);
+    searchImages = async (search) => {
+        this.setState(previousState => (
+            {search: search}
+        ));
+        let token = await this.getToken();
+        fetch('https://api.imgur.com/3/gallery/search/top/all/0?q=' + search, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                this.setState(previousState => (
+                    {searchImages: responseJson["data"]}
+                ));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
+    async showFav() {
+        let token = await this.getToken();
+        let username = await this.getUserName();
+        let page = 0;
+        let favoritesSort = 'newest';
+
+        fetch('https://api.imgur.com/3/account/' + username + '/favorites/' + page + '/' + favoritesSort, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                this.setState(previousState => (
+                    {images: responseJson["data"]}
+                ));
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
+
+    displayImages() {
+        if (this.state.images != null) {
+            return <ScrollView>
+                {this.state.images.map((image) => {
+                    return (
+                        <Image
+                            style={{width: 50, height: 50}}
+                            source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                        />
+                    );
+                })}
+            </ScrollView>
+        }
+    }
+
+    displaySearchImages() {
+        if (this.state.searchImages != null) {
+            return <ScrollView>
+                {this.state.searchImages.map((image) => {
+                    return (
+                        <Image
+                            style={{width: 50, height: 50}}
+                            source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                        />
+                    );
+                })}
+            </ScrollView>
+        }
+    }
 
     render() {
 
         if (this.state.logged) {
             // let userInfo = this.getUserInfo();
             let userinfo = this.state.userInfo["data"];
-            if(userinfo !== undefined) {
+            let images;
+            if (this.state.images != null) {
+                for (let data of this.state.images) {
+                    // console.log(data);
+                    // this.getImage(data['id'], token);
+                    images = <Image
+                        style={{width: 50, height: 50}}
+                        source={{uri: 'https://i.imgur.com/' + data['id'] + '.jpg'}}
+                    />;
+                }
+            }
+            if (userinfo !== undefined) {
                 console.log(userinfo);
                 return (
                     <View>
                         <SearchBar
                             placeholder="Type Here..."
-                            onChangeText={this.updateSearch}
+                            onChangeText={this.searchImages}
                             value={this.state.search}
                         />
                         <Image
@@ -163,7 +230,14 @@ class App extends Component {
                             style={{width: 50, height: 50}}
                             source={{uri: userinfo["avatar"]}}
                         />
+                        <View>
+                            {this.displayImages()}
+                            {this.displaySearchImages()}
+                        </View>
                         <Text style={styles.welcome}>Welcome {userinfo["url"]} to React Native!</Text>
+                        <Button title="Show my fav" onPress={() => {
+                            this.showFav();
+                        }}/>
                         <Button title="Se déconnecter" onPress={() => {
                             this.disconnect()
                         }}/>
