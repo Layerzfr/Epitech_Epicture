@@ -24,6 +24,8 @@ DerivedData
 # Android/IntelliJ
 #
 build/
+../.idea/
+../package-lock.json
 .idea
 .gradle
 local.properties
