@@ -234,7 +234,7 @@ class App extends Component {
                             {this.displayImages()}
                             {this.displaySearchImages()}
                         </View>
-                        <Text style={styles.welcome}>Welcome {userinfo["url"]} to React Native!</Text>
+                        <Text style={styles.welcome}>Welcome {userinfo["url"]}!</Text>
                         <Button title="Show my fav" onPress={() => {
                             this.showFav();
                         }}/>
@@ -247,7 +247,7 @@ class App extends Component {
 
                 return (
                     <View style={styles.container}>
-                        <Text style={styles.welcome}>Welcome to React Native!</Text>
+                        {/*<Text style={styles.welcome}>Welcome to React Native!</Text>*/}
                         <SearchBar
                             placeholder="Type Here..."
                             onChangeText={this.updateSearch}
@@ -265,7 +265,7 @@ class App extends Component {
         } else {
             return (
                 <View style={styles.container}>
-                    <Text style={styles.welcome}>Welcome to React Native!</Text>
+                    {/*<Text style={styles.welcome}>Welcome to React Native!</Text>*/}
                     <SearchBar
                         placeholder="Type Here..."
                         onChangeText={this.updateSearch}
