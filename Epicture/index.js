@@ -3,6 +3,7 @@ import {AppRegistry, StyleSheet, Text, View, Button, Linking, AsyncStorage, Imag
 import {SearchBar} from 'react-native-elements';
 
 import {authorize} from 'react-native-app-auth';
+import Login from "./app/login";
 
 class App extends Component {
 
@@ -246,35 +247,12 @@ class App extends Component {
             } else {
 
                 return (
-                    <View style={styles.container}>
-                        {/*<Text style={styles.welcome}>Welcome to React Native!</Text>*/}
-                        <SearchBar
-                            placeholder="Type Here..."
-                            onChangeText={this.updateSearch}
-                            value={this.state.search}
-                        />
-                        <Button title="Get my token" onPress={() => {
-                            this.getToken()
-                        }}/>
-                        <Button title="Se déconnecter" onPress={() => {
-                            this.disconnect()
-                        }}/>
-                    </View>
+                    <Login></Login>
                 );
             }
         } else {
             return (
-                <View style={styles.container}>
-                    {/*<Text style={styles.welcome}>Welcome to React Native!</Text>*/}
-                    <SearchBar
-                        placeholder="Type Here..."
-                        onChangeText={this.updateSearch}
-                        value={this.state.search}
-                    />
-                    <Button title="Login" onPress={() => {
-                        Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=52cbd80405a2505&response_type=token')
-                    }}/>
-                </View>
+                <Login></Login>
             );
         }
     }
