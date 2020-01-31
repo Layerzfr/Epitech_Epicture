@@ -4,10 +4,15 @@ import {SearchBar} from 'react-native-elements';
 
 import {authorize} from 'react-native-app-auth';
 import Login from "./app/login";
+import Home from "./app/Home";
 
 class App extends Component {
 
-    state = {logged: false, userInfo: null, search: '', photos: null, images: null, searchImages: null};
+    constructor(props) {
+        super(props);
+    }
+
+    state = {logged: false, userInfo: null, search: '', photos: null, images: null, searchImages: null, token: null};
 
     componentDidMount() {
         Linking.getInitialURL().then((url) => {
@@ -42,7 +47,7 @@ class App extends Component {
                     'token': token,
                 }).then(r => {
                     this.setState(previousState => (
-                        {logged: true, userInfo: this.getUserInfo()}
+                        {logged: true, userInfo: this.getUserInfo(), token: token}
                     ));
                     console.log("done");
                 });
@@ -217,32 +222,33 @@ class App extends Component {
             if (userinfo !== undefined) {
                 console.log(userinfo);
                 return (
-                    <View>
-                        <SearchBar
-                            placeholder="Type Here..."
-                            onChangeText={this.searchImages}
-                            value={this.state.search}
-                        />
-                        <Image
-                            style={{width: 50, height: 50}}
-                            source={{uri: userinfo["cover"]}}
-                        />
-                        <Image
-                            style={{width: 50, height: 50}}
-                            source={{uri: userinfo["avatar"]}}
-                        />
-                        <View>
-                            {this.displayImages()}
-                            {this.displaySearchImages()}
-                        </View>
-                        <Text style={styles.welcome}>Welcome {userinfo["url"]}!</Text>
-                        <Button title="Show my fav" onPress={() => {
-                            this.showFav();
-                        }}/>
-                        <Button title="Se déconnecter" onPress={() => {
-                            this.disconnect()
-                        }}/>
-                    </View>
+                    // <View>
+                    //     <SearchBar
+                    //         placeholder="Type Here..."
+                    //         onChangeText={this.searchImages}
+                    //         value={this.state.search}
+                    //     />
+                    //     <Image
+                    //         style={{width: 50, height: 50}}
+                    //         source={{uri: userinfo["cover"]}}
+                    //     />
+                    //     <Image
+                    //         style={{width: 50, height: 50}}
+                    //         source={{uri: userinfo["avatar"]}}
+                    //     />
+                    //     <View>
+                    //         {this.displayImages()}
+                    //         {this.displaySearchImages()}
+                    //     </View>
+                    //     <Text style={styles.welcome}>Welcome {userinfo["url"]}!</Text>
+                    //     <Button title="Show my fav" onPress={() => {
+                    //         this.showFav();
+                    //     }}/>
+                    //     <Button title="Se déconnecter" onPress={() => {
+                    //         this.disconnect()
+                    //     }}/>
+                    // </View>
+                    <Home image={images} home={userinfo} token={this.state.token}></Home>
                 );
             } else {
 
