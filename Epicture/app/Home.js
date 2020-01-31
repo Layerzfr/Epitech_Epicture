@@ -2,10 +2,10 @@ import React, {
     Component
 } from 'react';
 import {Button, Image, ScrollView, View, Text} from "react-native";
-
+import ImagePicker from 'react-native-image-picker';
 class Home extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}};
 
     constructor (props) {
         super(props);
@@ -13,6 +13,54 @@ class Home extends Component {
             {token: this.props.token, current: 'follow'}
         ));
     }
+
+    createFormData = (photo, body) => {
+        const data = new FormData();
+
+        data.append("photo", {
+            name: photo.fileName,
+            type: photo.type,
+            uri:
+                Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+        });
+
+        Object.keys(body).forEach(key => {
+            data.append(key, body[key]);
+        });
+
+        return data;
+    };
+
+    handleUploadPhoto = () => {
+        fetch("https://api.imgur.com/3/upload", {
+            method: "POST",
+            body: this.createFormData(this.state.filePath, { userId: "123" })
+        })
+            .then(response => response.json())
+            .then(response => {
+                console.log("upload succes", response);
+                alert("Upload success!");
+                this.setState({ photo: null });
+            })
+            .catch(error => {
+                console.log("upload error", error);
+                alert("Upload failed!");
+            });
+    };
+
+    chooseFile = () => {
+        const options = {
+            noData: true,
+        };
+        ImagePicker.showImagePicker(options, response => {
+            if (response.uri) {
+                this.setState(previousState => (
+                    {filePath: response}
+                ));
+                this.handleUploadPhoto();
+            }
+        });
+    };
 
     showViral = () => {
         let token = this.state.token;
@@ -130,6 +178,11 @@ class Home extends Component {
                 <Button title="Popular" onPress={this.showViral}>
 
                 </Button>
+                <Button title="Choose File" onPress={this.chooseFile.bind(this)} />
+                <Image
+                    source={{ uri: this.state.filePath.uri }}
+                    style={{ width: 250, height: 250 }}
+                />
                 {this.displayImages(0)}
             </View>
 
