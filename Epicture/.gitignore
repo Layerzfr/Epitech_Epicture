@@ -28,7 +28,7 @@ build/
 ../package-lock.json
 .idea
 .gradle
-local.properties
+android/local.properties
 *.iml
 
 # node.js

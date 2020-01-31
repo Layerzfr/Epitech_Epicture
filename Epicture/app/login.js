@@ -1,7 +1,6 @@
-import React, {
-    Component,
-} from 'react';
+import React, { Component } from 'react';
 import {Button, ImageBackground, Linking, Text, TouchableOpacity, View, StyleSheet} from "react-native";
+import {BottomNavigator} from "../Assert/Component/BottomNavigator/BottomNavigator";
 
 class Login extends Component{
     state = {};
@@ -11,24 +10,26 @@ class Login extends Component{
     }
 
     render() {
-        return (<View>
-            <ImageBackground source={require('../Assert/PNG/Fond_Logo.png')}
-                             style={{width: '100%', height: '100%'}}>
-                <TouchableOpacity
-                    style={styles.button} onPress={() => {
-                    Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=52cbd80405a2505&response_type=token')
-                }}
-                >
-                    <Text style={styles.text}>Get Started</Text>
-                </TouchableOpacity>
-                <View style={styles.buttonShadow}></View>
-            </ImageBackground>
-            {/*<Text>
-                Aides
-            </Text>*/}
-        </View>);
+        return (
+            <View>
+                <ImageBackground source={require('../Assert/PNG/Fond_Logo.png')}
+                                 style={{width: '100%', height: '100%'}}>
+                    <TouchableOpacity
+                        style={styles.button} onPress={() => {
+                        Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=52cbd80405a2505&response_type=token').then(r =>{} )
+                    }}
+                    >
+                        <Text style={styles.text}>Get Started</Text>
+                    </TouchableOpacity>
+                    <View style={styles.buttonShadow}/>
+                    <BottomNavigator/>
+                </ImageBackground>
+            </View>
+        );
     }
 }
+
+
 const styles = StyleSheet.create({
     text: {
         color: '#025E73',
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
         bottom: 47,
         opacity: 0.15,
     },
-})
+});
 
 export default Login
 
