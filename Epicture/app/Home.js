@@ -5,7 +5,7 @@ import {Button, Image, ScrollView, View, Text} from "react-native";
 
 class Home extends Component {
 
-    state = {images: null, token: null, current: 'follow',};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2};
 
     constructor (props) {
         super(props);
@@ -32,7 +32,7 @@ class Home extends Component {
                 this.setState(previousState => (
                     {images: responseJson["data"], current: 'viral'}
                 ));
-                this.displayImages();
+                this.displayImages(0);
             })
             .catch((error) => {
                 console.error(error);
@@ -55,34 +55,67 @@ class Home extends Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 this.setState(previousState => (
-                    {images: responseJson["data"], current: 'follow'}
+                    {images: responseJson["data"], current: 'follow', currentEnd: 2}
                 ));
-                console.log('fav => ',responseJson);
-                this.displayImages();
+                this.displayImages(0);
             })
             .catch((error) => {
                 console.error(error);
             });
     };
 
-    displayImages() {
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
+    };
+
+
+    displayImages(pages) {
+        let count = 0;
         if (this.state.images != null) {
-            return <ScrollView>
+            return <ScrollView onScroll={({ nativeEvent }) => {
+                if (this.isCloseToBottom(nativeEvent)) {
+                    this.setState(previousState => (
+                        {maxImage: this.state.maxImage + 2}
+                    ));
+                }
+            }}>
                 {this.state.images.map((image) => {
-                    return (
-                        <View>
+                    if(count <= this.state.maxImage) {
+                        count++;
+                        return (
+                            <View>
+                                <Image
+                                    style={{width: 500, height: 500}}
+                                    source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                                />
+                                <View>
+                                    <Text>
+                                        {image['ups']} upvote
+                                    </Text>
+                                    <Text>
+                                        {image['downs']} downvote
+                                    </Text>
+                                    <Text>
+                                        {image['favorite_count']} fav
+                                    </Text>
+                                    <Text>
+                                        Logo partage
+                                    </Text>
+                                </View>
+                                <View>
+                                    <Text>
+                                        {image['comment_count']} commentaires
+                                    </Text>
+                                    <Text>
+                                        Ajouter un commentaire
+                                    </Text>
+                                </View>
+                            </View>
 
-                            <Image
-                                style={{width: 500, height: 500}}
-                                source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
-                            />
-                            <Text>
-                                {image['comment_count']} commentaires
-                            </Text>
+                        );
+                    }
+                    count++;
 
-                        </View>
-
-                    );
                 })}
             </ScrollView>
         }
@@ -97,7 +130,7 @@ class Home extends Component {
                 <Button title="Popular" onPress={this.showViral}>
 
                 </Button>
-                {this.displayImages()}
+                {this.displayImages(0)}
             </View>
         );
     }
