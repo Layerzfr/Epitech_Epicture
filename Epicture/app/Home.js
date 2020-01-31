@@ -132,7 +132,8 @@ class Home extends Component {
                 </Button>
                 {this.displayImages(0)}
             </View>
-        );
+
+    );
     }
 }
 

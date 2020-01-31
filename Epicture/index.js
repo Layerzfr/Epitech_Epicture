@@ -5,6 +5,7 @@ import {SearchBar} from 'react-native-elements';
 import {authorize} from 'react-native-app-auth';
 import Login from "./app/login";
 import Home from "./app/Home";
+import Search from "./app/Search";
 
 class App extends Component {
 
@@ -249,6 +250,9 @@ class App extends Component {
                     //     }}/>
                     // </View>
                     <Home image={images} home={userinfo} token={this.state.token}></Home>
+                    // <Search token={this.state.token}>
+                    //
+                    // </Search>
                 );
             } else {
 
