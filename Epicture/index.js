@@ -5,6 +5,16 @@ import {SearchBar} from 'react-native-elements';
 import {authorize} from 'react-native-app-auth';
 import Login from "./app/login";
 import Home from "./app/Home";
+import Search from "./app/Search";
+import {createStackNavigator} from "react-navigation-stack";
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Profile from "./app/Profile";
+
+const Tab = createBottomTabNavigator();
+
+
+const test = createAppContainer(Tab);
 
 class App extends Component {
 
@@ -146,7 +156,7 @@ class App extends Component {
             .catch((error) => {
                 console.error(error);
             });
-    }
+    };
 
     async showFav() {
         let token = await this.getToken();
@@ -248,7 +258,13 @@ class App extends Component {
                     //         this.disconnect()
                     //     }}/>
                     // </View>
-                    <Home image={images} home={userinfo} token={this.state.token}></Home>
+                    <test.Navigator>
+                        <test.Screen name="Home" component={Home} />
+                    </test.Navigator>
+                    // <Home image={images} home={userinfo} token={this.state.token}></Home>
+                    // <Search token={this.state.token}>
+                    //
+                    // </Search>
                 );
             } else {
 
@@ -277,5 +293,7 @@ const styles = StyleSheet.create({
         margin: 10,
     },
 });
+
+
 
 AppRegistry.registerComponent("Epicture", () => App);
