@@ -9,8 +9,9 @@ class Home extends Component {
 
     constructor (props) {
         super(props);
+        console.log('props:', props);
         this.setState(previousState => (
-            {token: this.props.token, current: 'follow'}
+            {token: this.props.screenProps.token, current: 'follow'}
         ));
     }
 
@@ -64,7 +65,7 @@ class Home extends Component {
 
     showViral = () => {
         let token = this.state.token;
-        let username = this.props.home['url'];
+        let username = this.props.screenProps.home['url'];
         let page = 0;
         let favoritesSort = 'newest';
 
@@ -73,7 +74,7 @@ class Home extends Component {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.props.token
+                'Authorization': 'Bearer ' + this.props.screenProps.token
             },
         }).then((response) => response.json())
             .then((responseJson) => {
@@ -89,7 +90,7 @@ class Home extends Component {
 
     showFav = () => {
         let token = this.state.token;
-        let username = this.props.home['url'];
+        let username = this.props.screenProps.home['url'];
         let page = 0;
         let favoritesSort = 'newest';
 
@@ -98,13 +99,14 @@ class Home extends Component {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.props.token
+                'Authorization': 'Bearer ' + this.props.screenProps.token
             },
         }).then((response) => response.json())
             .then((responseJson) => {
                 this.setState(previousState => (
                     {images: responseJson["data"], current: 'follow', currentEnd: 2}
                 ));
+                console.log('SUCCESS: ', responseJson);
                 this.displayImages(0);
             })
             .catch((error) => {
@@ -181,9 +183,7 @@ class Home extends Component {
                 <Button title="Choose File" onPress={this.chooseFile.bind(this)} />
                 <Image
                     source={{ uri: this.state.filePath.uri }}
-                    style={{ width: 250, height: 250 }}
                 />
-                <Button onPress={() => this.props.navigation.navigate('SearchScreen')} title="Search"/>
                 {this.displayImages(0)}
             </View>
 
