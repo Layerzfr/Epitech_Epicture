@@ -15,53 +15,13 @@ class Home extends Component {
         ));
     }
 
-    createFormData = (photo, body) => {
-        const data = new FormData();
-
-        data.append("photo", {
-            name: photo.fileName,
-            type: photo.type,
-            uri:
-                Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
-        });
-
-        Object.keys(body).forEach(key => {
-            data.append(key, body[key]);
-        });
-
-        return data;
+    componentDidMount(){
+        this.props.navigation.addListener('willFocus', this.load);
+    }
+    load = () => {
+        this.showFav();
     };
 
-    handleUploadPhoto = () => {
-        fetch("https://api.imgur.com/3/upload", {
-            method: "POST",
-            body: this.createFormData(this.state.filePath, { userId: "123" })
-        })
-            .then(response => response.json())
-            .then(response => {
-                console.log("upload succes", response);
-                alert("Upload success!");
-                this.setState({ photo: null });
-            })
-            .catch(error => {
-                console.log("upload error", error);
-                alert("Upload failed!");
-            });
-    };
-
-    chooseFile = () => {
-        const options = {
-            noData: true,
-        };
-        ImagePicker.showImagePicker(options, response => {
-            if (response.uri) {
-                this.setState(previousState => (
-                    {filePath: response}
-                ));
-                this.handleUploadPhoto();
-            }
-        });
-    };
 
     showViral = () => {
         let token = this.state.token;
@@ -174,16 +134,12 @@ class Home extends Component {
     render() {
         return (
             <View>
-                <Button title="Follow" onPress={this.showFav}>
+                <Button title="Favorites" onPress={this.showFav}>
 
                 </Button>
                 <Button title="Popular" onPress={this.showViral}>
 
                 </Button>
-                <Button title="Choose File" onPress={this.chooseFile.bind(this)} />
-                <Image
-                    source={{ uri: this.state.filePath.uri }}
-                />
                 {this.displayImages(0)}
             </View>
 
