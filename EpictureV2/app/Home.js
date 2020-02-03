@@ -53,12 +53,58 @@ class Home extends Component {
         const options = {
             noData: true,
         };
-        ImagePicker.showImagePicker(options, response => {
-            if (response.uri) {
-                this.setState(previousState => (
-                    {filePath: response}
-                ));
-                this.handleUploadPhoto();
+
+        ImagePicker.showImagePicker({
+            title: 'Select Avatar',
+            customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        }, (response) => {
+            console.log('Response = ', response);
+
+            const data = new FormData();
+            data.append('image', response.data); // you can append anyone.
+            data.append('name', 'test');
+            data.append('type', 'file');
+            // data.append('photo', {
+            //     uri: photo.uri,
+            //     type: 'image/jpeg', // or photo.type
+            //     name: 'testPhotoName'
+            // });
+
+            fetch('https://api.imgur.com/3/upload', {
+                method: 'POST',
+                body: data,
+                headers: {
+                    // Accept: 'application/json',
+                    // 'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.token,
+                },
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('success: ', responseJson);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                const source = { uri: response.uri };
+
+                // You can also display the image using data:
+                // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+                this.setState({
+                    filePath: source,
+                });
             }
         });
     };
