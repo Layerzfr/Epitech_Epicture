@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {Image, ScrollView, Text, View} from "react-native";
+import {Image, Picker, ScrollView, Text, View} from 'react-native';
 import Login from "./login";
 import {SearchBar} from "react-native-elements";
 
 class Search extends Component {
 
-    state = {search: null, token: null, maxImage: 2}
+    state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all'};
 
     constructor(props) {
         super(props);
@@ -19,12 +19,11 @@ class Search extends Component {
     };
 
     searchImages = (search) => {
-        console.log('test');
         this.setState(previousState => (
             {search: search}
         ));
         let token = this.props.screenProps.token;
-        fetch('https://api.imgur.com/3/gallery/search/top/all/0?q=' + search, {
+        fetch('https://api.imgur.com/3/gallery/search/' + this.state.sort + '/' + this.state.date + '/0?q=' + search, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -111,6 +110,9 @@ class Search extends Component {
                         count++;
                         return (
                             <View>
+                                <Text>
+                                    {image['title']}
+                                </Text>
                                 <Image
                                     style={{width: 500, height: 500}}
                                     source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
@@ -170,6 +172,36 @@ class Search extends Component {
                             value={this.state.search}
                         />
                 <Text>Search page</Text>
+                <Picker
+                    selectedValue={this.state.sort}
+                    style={{height: 50, width: 100}}
+                    onValueChange={(itemValue, itemIndex) => {
+                        this.setState({sort: itemValue});
+                        if (this.state.search !== null) {
+                            this.searchImages(this.state.search);
+                        }
+                    }
+                    }>
+                    <Picker.Item label="Top" value="top" />
+                    <Picker.Item label="Viral" value="viral" />
+                    <Picker.Item label="Time" value="time" />
+                </Picker>
+                <Picker
+                    selectedValue={this.state.date}
+                    style={{height: 50, width: 100}}
+                    onValueChange={(itemValue, itemIndex) => {
+                        this.setState({date: itemValue});
+                        if (this.state.search !== null) {
+                            this.searchImages(this.state.search);
+                        }
+                    }
+                    }>
+                    <Picker.Item label="Day" value="day" />
+                    <Picker.Item label="Week" value="week" />
+                    <Picker.Item label="Month" value="month" />
+                    <Picker.Item label="Year" value="year" />
+                    <Picker.Item label="All" value="all" />
+                </Picker>
                 {this.displaySearchImages()}
 
             </View>
