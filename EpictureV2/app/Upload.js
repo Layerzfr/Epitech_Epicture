@@ -47,7 +47,7 @@ class Upload extends Component {
 
         const data = new FormData();
         data.append('image', this.state.imageData);
-        data.append('name', this.state.title);
+        data.append('title', this.state.title);
         data.append('type', 'file');
 
         fetch('https://api.imgur.com/3/upload', {
@@ -167,8 +167,11 @@ class Upload extends Component {
                     <View>
                         <TextInput
                             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                            onSubmitEditing={text => this.setState({
-                            title: text.nativeEvent.text})
+                            onSubmitEditing={text => {
+                                this.setState({
+                                    title: text.nativeEvent.text
+                                });
+                            }
                             }
                             value={this.value}
                         />

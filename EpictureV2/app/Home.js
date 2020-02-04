@@ -99,6 +99,7 @@ class Home extends Component {
                                     source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
                                 />
                                 <View>
+                                    <Button title='Fav/Unfav' onPress={() => this.unfav(image['id'])}/>
                                     <Text>
                                         {image['ups']} upvote
                                     </Text>
@@ -120,6 +121,9 @@ class Home extends Component {
                                         Ajouter un commentaire
                                     </Text>
                                 </View>
+                                <View>
+
+                                </View>
                             </View>
 
                         );
@@ -130,6 +134,24 @@ class Home extends Component {
             </ScrollView>
         }
     }
+
+    unfav = (id) => {
+
+        fetch('https://api.imgur.com/3/album/'+id+'/favorite', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                this.showFav();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     render() {
         return (
