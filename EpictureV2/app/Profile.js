@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Image, ScrollView, View} from 'react-native';
+import {Button, Image, ScrollView, View, StyleSheet, ImageBackground} from 'react-native';
 import {Text} from 'react-native-paper';
 
 class Profile extends React.Component {
@@ -69,6 +69,7 @@ class Profile extends React.Component {
                         count++;
                         return (
                             <View>
+                                <Text> {image['title']}</Text>
                                 <Image
                                     style={{width: 500, height: 500}}
                                     source={{uri: 'https://i.imgur.com/' + image['id'] + '.jpg'}}
@@ -108,17 +109,83 @@ class Profile extends React.Component {
 
     render() {
         return(
-            <View >
-                <Text>Profile page</Text>
-
-                <View>
-                    <Text>My images</Text>
+            <ScrollView style={styles.container}>
+                <View style={styles.header}>
+                    <Image style={styles.backgroundImage} source={{uri: this.props.screenProps.home['cover']}}/>
                 </View>
-                {this.displayImages()}
-
-            </View>
+                <Image style={styles.avatar} source={{uri: this.props.screenProps.home['avatar']}}/>
+                <View style={styles.body}>
+                    <View style={styles.bodyContent}>
+                        <Text style={styles.name}>{this.props.screenProps.home['url']}</Text>
+                    </View>
+                    {this.displayImages()}
+                </View>
+            </ScrollView>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    header:{
+        height:200,
+    },
+    backgroundImage: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'cover'
+    },
+    avatar: {
+        width: 130,
+        height: 130,
+        borderRadius: 63,
+        borderWidth: 4,
+        borderColor: "white",
+        marginBottom:10,
+        alignSelf:'center',
+        position: 'absolute',
+        marginTop:130
+    },
+    name:{
+        fontSize:22,
+        color:"#FFFFFF",
+        fontWeight:'600',
+    },
+    body:{
+        marginTop:40,
+    },
+    bodyContent: {
+        flex: 1,
+        alignItems: 'center',
+        padding:30,
+    },
+    name:{
+        fontSize:28,
+        color: "#696969",
+        fontWeight: "600"
+    },
+    info:{
+        fontSize:16,
+        color: "#00BFFF",
+        marginTop:10
+    },
+    description:{
+        fontSize:16,
+        color: "#696969",
+        marginTop:10,
+        textAlign: 'center'
+    },
+    buttonContainer: {
+        marginTop:10,
+        height:45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom:20,
+        width:250,
+        borderRadius:30,
+        backgroundColor: "#00BFFF",
+    },
+});
 
 export default Profile;
