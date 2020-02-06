@@ -292,7 +292,9 @@ class App extends React.Component{
             // <Search token={this.state.token}>
             //
             // </Search>
-            <Navbar screenProps={{ home: userinfo, token: this.state.token }}></Navbar>
+            <Navbar screenProps={{ home: userinfo, token: this.state.token, disconnect: () => {
+                this.disconnect();
+              } }}></Navbar>
         );
       } else {
 
