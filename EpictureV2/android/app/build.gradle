@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.epicture"
+        applicationId "com.epicturev2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

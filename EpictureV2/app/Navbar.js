@@ -4,64 +4,150 @@ import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom
 import {createAppContainer} from 'react-navigation';
 import Search from './Search';
 import Upload from './Upload';
-import {Icon} from 'react-native-elements';
-import {View} from 'react-native';
+import {colors, Icon} from 'react-native-elements';
+import {Button, Image, StyleSheet, View} from 'react-native';
 import React from 'react';
+import Favorite from "./Favorite";
+
+let currentPage = 'Home';
 
 const NavbarContainer = createMaterialBottomTabNavigator(
     {
         Home: {
             screen: Home,
             navigationOptions: {
-                tabBarLabel: 'Home',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'home'}/>
-                </View>),
-                }
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Home;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Home) {
+                        return (<View style={styles.base}>
+                            <Image style={styles.image} source={require('../Assert/Icon/Home/home-current.png')}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Home/home.png')}/>
+                        </View>)
+                    }
+                },
+            }
         },
-        Upload: {screen: Upload,
+        Search: {
+            screen: Search,
             navigationOptions: {
-                tabBarLabel: 'Upload',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'add'}/>
-                </View>),
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Search;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Search) {
+                        return (<View style={styles.base}>
+                            <Image style={{top:1,height: 30, width: 30, right:2}} source={require('../Assert/Icon/Search/search-line.png')}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Search/search-noline.png')}/>
+                        </View>)
+                    }
+                },
             }
-            },
-        Profile: { screen: Profile,
+        },
+        Upload: {
+            screen: Upload,
             navigationOptions: {
-                tabBarLabel: 'Profile',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'person'}/>
-                </View>),
-
-                activeColor: '#615af6',
-                inactiveColor: '#46f6d7',
-                barStyle: { backgroundColor: '#67baf6' },
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Upload;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Upload) {
+                        return (<View style={styles.base}>
+                            <Image style={styles.image} source={require('../Assert/Icon/Croix/circleNoOutline.png')}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Croix/circleOutline.png')}/>
+                        </View>)
+                    }
+                },
             }
-            },
-        Search: { screen: Search,
+        },
+        Favorite: {
+            screen: Favorite,
             navigationOptions: {
-                tabBarLabel: 'Search',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'search'}/>
-                </View>),
-                activeColor: '#f60c0d',
-                inactiveColor: '#f65a22',
-                barStyle: { backgroundColor: '#f69b31' },
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Favorite;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Favorite) {
+                        return (<View style={styles.base}>
+                            <Image style={{top:1,height: 30, width: 33, right:2}} source={require('../Assert/Icon/Heart/heart.png')}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Image style={{height: 25, width: 28, right:2}} source={require('../Assert/Icon/Heart/heart-outline.png')}/>
+                        </View>)
+                    }
+                },
             }
-            },
+        },
+        Profile: {
+            screen: Profile,
+            navigationOptions: {
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Profile;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Profile) {
+                        return (<View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
+                            <Image style={{top:12, height: '23%', width: '47%'}} source={require('../Assert/Icon/Profile/profile.png')}/>
+                        </View>)
+                    } else {
+                        return (
+                                <View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
+                                    <Image style={{zIndex: 0,top:10, height: '18%', width: '36%'}} source={require('../Assert/Icon/Profile/profile-outline.png')}/>
+                                </View>)
+                    }
+                },
+            }
+        },
     },
     {
-        initialRouteName: 'Home',
-        activeColor: '#f0edf6',
-        inactiveColor: '#3e2465',
-        barStyle: { backgroundColor: '#694fad' },
+        initialRouteName: currentPage,
+        activeColor: 'white',
+        inactiveColor: 'grey',
+        barStyle: {backgroundColor: '#0F353F', height:53},
     }
 );
+
+const styles = StyleSheet.create({
+    image: {
+        height: 30,
+        width: 30,
+    },
+    image2: {
+        height: 25,
+        width: 25,
+    },
+    base: {
+        alignItems:'center',
+        width:50,
+        height:100,
+    },
+    hidden: {
+        alignItems:'center',
+        width:50,
+        height:100,
+    },
+});
 
 const Navbar = createAppContainer(NavbarContainer);
 
