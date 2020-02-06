@@ -9,7 +9,7 @@ import {Button, Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import Favorite from "./Favorite";
 
-    let currentPage;
+let currentPage = 'Home';
 
 const NavbarContainer = createMaterialBottomTabNavigator(
     {
@@ -24,11 +24,11 @@ const NavbarContainer = createMaterialBottomTabNavigator(
                 tabBarIcon: () => {
                     if (currentPage == Home) {
                         return (<View style={styles.base}>
-                            <Icon color={'#589FD5'} size={40} name={'home'}/>
+                            <Image style={styles.image} source={require('../Assert/Icon/Home/home-current.png')}/>
                         </View>)
                     } else {
                         return (<View style={styles.hidden}>
-                            <Icon color={'#1573AD'} size={30} name={'home-current'}/>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Home/home.png')}/>
                         </View>)
                     }
                 },
@@ -45,11 +45,11 @@ const NavbarContainer = createMaterialBottomTabNavigator(
                 tabBarIcon: () => {
                     if (currentPage == Search) {
                         return (<View style={styles.base}>
-                            <Icon color={'#589FD5'} size={40} name={'search-noline'}/>
+                            <Image style={{top:1,height: 30, width: 30, right:2}} source={require('../Assert/Icon/Search/search-line.png')}/>
                         </View>)
                     } else {
                         return (<View style={styles.hidden}>
-                            <Icon color={'#1573AD'} size={30} name={'search-line'}/>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Search/search-noline.png')}/>
                         </View>)
                     }
                 },
@@ -66,11 +66,11 @@ const NavbarContainer = createMaterialBottomTabNavigator(
                 tabBarIcon: () => {
                     if (currentPage == Upload) {
                         return (<View style={styles.base}>
-                            <Image style={{width: '100%', height: '100%'}} source={require('../Assert/Icon/Croix/circleNoOutline.svg')}/>
+                            <Image style={styles.image} source={require('../Assert/Icon/Croix/circleNoOutline.png')}/>
                         </View>)
                     } else {
                         return (<View style={styles.hidden}>
-                            <Image style={{width: '100%', height: '100%'}} source={require('../Assert/Icon/Croix/circleOutline.svg')}/>
+                            <Image style={styles.image2} source={require('../Assert/Icon/Croix/circleOutline.png')}/>
                         </View>)
                     }
                 },
@@ -87,11 +87,11 @@ const NavbarContainer = createMaterialBottomTabNavigator(
                 tabBarIcon: () => {
                     if (currentPage == Favorite) {
                         return (<View style={styles.base}>
-                            <Icon color={'#589FD5'} size={40} name={'favorite'}/>
+                            <Image style={{top:1,height: 30, width: 33, right:2}} source={require('../Assert/Icon/Heart/heart.png')}/>
                         </View>)
                     } else {
                         return (<View style={styles.hidden}>
-                            <Icon color={'#1573AD'} size={30} name={'favorite-border'}/>
+                            <Image style={{height: 25, width: 28, right:2}} source={require('../Assert/Icon/Heart/heart-outline.png')}/>
                         </View>)
                     }
                 },
@@ -107,44 +107,45 @@ const NavbarContainer = createMaterialBottomTabNavigator(
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
                     if (currentPage == Profile) {
-                        return (<View style={styles.base}>
-                            <Icon color={'#589FD5'} size={40} name={'person'}/>
+                        return (<View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
+                            <Image style={{top:12, height: '23%', width: '47%'}} source={require('../Assert/Icon/Profile/profile.png')}/>
                         </View>)
                     } else {
-                        return (<View style={styles.hidden}>
-                            <Icon color={'#1573AD'} size={30} name={'person-outline'}/>
-                        </View>)
+                        return (
+                                <View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
+                                    <Image style={{zIndex: 0,top:10, height: '18%', width: '36%'}} source={require('../Assert/Icon/Profile/profile-outline.png')}/>
+                                </View>)
                     }
                 },
             }
         },
     },
     {
-        initialRouteName: 'Home',
+        initialRouteName: currentPage,
         activeColor: 'white',
         inactiveColor: 'grey',
-        barStyle: {backgroundColor: '#0F353F', height:50},
+        barStyle: {backgroundColor: '#0F353F', height:53},
     }
 );
 
 const styles = StyleSheet.create({
     image: {
-        zIndex: 1,
-        display: 'flex',
-        backgroundColor: 'red'
-
+        height: 30,
+        width: 30,
+    },
+    image2: {
+        height: 25,
+        width: 25,
     },
     base: {
         alignItems:'center',
         width:50,
         height:100,
-        bottom:10
     },
     hidden: {
         alignItems:'center',
         width:50,
         height:100,
-        bottom:5
     },
 });
 

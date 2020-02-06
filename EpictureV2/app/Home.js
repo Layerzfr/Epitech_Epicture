@@ -1,7 +1,7 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text} from "react-native";
+import {Button, Image, ScrollView, View, Text, StyleSheet} from "react-native";
 import ImagePicker from 'react-native-image-picker';
 class Home extends Component {
 
@@ -153,14 +153,36 @@ class Home extends Component {
             });
     };
 
+    wave = {
+      if (current) {
+
+      }
+    };
+
     render() {
         return (
             <View>
                 {this.displayImages(0)}
+                {/*<View style={styles.wave}>
+                    <Image style={{right: 12,height: '50%', width: '50%'}} source={require('../Assert/PNG/wave.png')}/>
+                </View>*/}
             </View>
 
     );
     }
 }
+
+/*const styles = StyleSheet.create({
+    wave: {
+        zIndex: 10,
+        display: 'flex',
+        width: '50%',
+        height: 45,
+        left: 0,
+        right: 600,
+        top: 292,
+        marginTop: 350,
+    }
+});*/
 
 export default Home
