@@ -1,7 +1,7 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text} from "react-native";
+import {Button, Image, ScrollView, View, Text, TouchableOpacity} from "react-native";
 import ImagePicker from 'react-native-image-picker';
 class Favorite extends Component {
 
@@ -99,26 +99,30 @@ class Favorite extends Component {
                                     source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
                                 />
                                 <View>
-                                    <Button title='Fav/Unfav' onPress={() => this.unfav(image['id'])}/>
-                                    <Text>
-                                        {image['ups']} upvote
-                                    </Text>
-                                    <Text>
-                                        {image['downs']} downvote
-                                    </Text>
-                                    <Text>
-                                        {image['favorite_count']} fav
-                                    </Text>
-                                    <Text>
-                                        Logo partage
-                                    </Text>
+                                    <View>
+                                        <View style={{left:10}}>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => this.unfav(image['id'])}>
+                                                <Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={require('../Assert/Icon/Heart/heart.png')}/>
+                                            </TouchableOpacity>
+                                            <Image style={{bottom: 12, left: 60,height: 32, width: 37}} source={require('../Assert/Card/Logo/commenting-o.png')}/>
+                                        </View>
+                                        <Text>
+                                            {image['ups']} upvote
+                                        </Text>
+                                        <Text>
+                                            {image['downs']} downvote
+                                        </Text>
+                                        <Text>
+                                            {image['favorite_count']} fav
+                                        </Text>
+                                        <Text>
+                                            Logo partage
+                                        </Text>
+                                    </View>
                                 </View>
                                 <View>
                                     <Text>
                                         {image['comment_count']} commentaires
-                                    </Text>
-                                    <Text>
-                                        Ajouter un commentaire
                                     </Text>
                                 </View>
                                 <View>
