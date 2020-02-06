@@ -1,17 +1,18 @@
 import React, {Component} from "react";
-import {Image, Picker, ScrollView, Text, View} from 'react-native';
+import {ActivityIndicator, Image, Picker, ScrollView, Text, View} from 'react-native';
 import Login from "./login";
 import {SearchBar} from "react-native-elements";
 
 class Search extends Component {
 
-    state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all'};
+    state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all', loading: false,};
 
     constructor(props) {
         super(props);
         this.setState(previousState => (
             {token: this.props.screenProps.token, images: null}
         ));
+        this.timeout = 0;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -20,27 +21,32 @@ class Search extends Component {
 
     searchImages = (search) => {
         this.setState(previousState => (
-            {search: search}
+            {search: search, loading: true}
         ));
-        let token = this.props.screenProps.token;
-        fetch('https://api.imgur.com/3/gallery/search/' + this.state.sort + '/' + this.state.date + '/0?q=' + search, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-                this.setState(previousState => (
-                    {images: responseJson["data"]}
-                ));
-                this.displaySearchImages();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+
+        if(this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(()=>{
+            let token = this.props.screenProps.token;
+            fetch('https://api.imgur.com/3/gallery/search/' + this.state.sort + '/' + this.state.date + '/0?q=' + search, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    this.setState(previousState => (
+                        {images: responseJson["data"], loading: false,}
+                    ));
+                    this.displaySearchImages();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }, 2000);
+
     };
 
     displayImages(pages) {
@@ -97,7 +103,11 @@ class Search extends Component {
 
     displaySearchImages() {
         let count = 0;
-        if (this.state.images != null) {
+        if(this.state.loading == true) {
+            return ( <View>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>);
+        } else if (this.state.images != null) {
             return <ScrollView onScroll={({ nativeEvent }) => {
                 if (this.isCloseToBottom(nativeEvent)) {
                     this.setState(previousState => (
@@ -162,6 +172,17 @@ class Search extends Component {
         // }
     }
 
+    loading()
+    {
+        if(this.state.loading === true) {
+            return (
+                <View>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            );
+        }
+    }
+
     render() {
         return(
             <View
@@ -202,6 +223,8 @@ class Search extends Component {
                     <Picker.Item label="Year" value="year" />
                     <Picker.Item label="All" value="all" />
                 </Picker>
+
+                {/*{this.loading()}*/}
                 {this.displaySearchImages()}
 
             </View>
