@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button, ImageBackground, Linking, Text, TouchableOpacity, View, StyleSheet} from "react-native";
-import {BottomNavigator} from "../Assert/Component/BottomNavigator/BottomNavigator";
 
 class Login extends Component{
     state = {};
@@ -22,7 +21,6 @@ class Login extends Component{
                         <Text style={styles.text}>Get Started</Text>
                     </TouchableOpacity>
                     <View style={styles.buttonShadow}/>
-                    <BottomNavigator/>
                 </ImageBackground>
             </View>
         );

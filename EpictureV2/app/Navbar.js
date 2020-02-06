@@ -4,64 +4,149 @@ import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom
 import {createAppContainer} from 'react-navigation';
 import Search from './Search';
 import Upload from './Upload';
-import {Icon} from 'react-native-elements';
-import {View} from 'react-native';
+import {colors, Icon} from 'react-native-elements';
+import {Button, Image, StyleSheet, View} from 'react-native';
 import React from 'react';
+import Favorite from "./Favorite";
+
+    let currentPage;
 
 const NavbarContainer = createMaterialBottomTabNavigator(
     {
         Home: {
             screen: Home,
             navigationOptions: {
-                tabBarLabel: 'Home',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'home'}/>
-                </View>),
-                }
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Home;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Home) {
+                        return (<View style={styles.base}>
+                            <Icon color={'#589FD5'} size={40} name={'home'}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Icon color={'#1573AD'} size={30} name={'home-current'}/>
+                        </View>)
+                    }
+                },
+            }
         },
-        Upload: {screen: Upload,
+        Search: {
+            screen: Search,
             navigationOptions: {
-                tabBarLabel: 'Upload',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'add'}/>
-                </View>),
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Search;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Search) {
+                        return (<View style={styles.base}>
+                            <Icon color={'#589FD5'} size={40} name={'search-noline'}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Icon color={'#1573AD'} size={30} name={'search-line'}/>
+                        </View>)
+                    }
+                },
             }
-            },
-        Profile: { screen: Profile,
+        },
+        Upload: {
+            screen: Upload,
             navigationOptions: {
-                tabBarLabel: 'Profile',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'person'}/>
-                </View>),
-
-                activeColor: '#615af6',
-                inactiveColor: '#46f6d7',
-                barStyle: { backgroundColor: '#67baf6' },
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Upload;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Upload) {
+                        return (<View style={styles.base}>
+                            <Image style={{width: '100%', height: '100%'}} source={require('../Assert/Icon/Croix/circleNoOutline.svg')}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Image style={{width: '100%', height: '100%'}} source={require('../Assert/Icon/Croix/circleOutline.svg')}/>
+                        </View>)
+                    }
+                },
             }
-            },
-        Search: { screen: Search,
+        },
+        Favorite: {
+            screen: Favorite,
             navigationOptions: {
-                tabBarLabel: 'Search',
-                tabBarIcon: ({tintColor}) => (
-                <View>
-                    <Icon style={[{color: tintColor}]} size={25} name={'search'}/>
-                </View>),
-                activeColor: '#f60c0d',
-                inactiveColor: '#f65a22',
-                barStyle: { backgroundColor: '#f69b31' },
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Favorite;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Favorite) {
+                        return (<View style={styles.base}>
+                            <Icon color={'#589FD5'} size={40} name={'favorite'}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Icon color={'#1573AD'} size={30} name={'favorite-border'}/>
+                        </View>)
+                    }
+                },
             }
-            },
+        },
+        Profile: {
+            screen: Profile,
+            navigationOptions: {
+                tabBarOnPress: ({navigation, defaultHandler}) => {
+                    currentPage = Profile;
+                    defaultHandler();
+                },
+                tabBarLabel: ' ',
+                tabBarIcon: () => {
+                    if (currentPage == Profile) {
+                        return (<View style={styles.base}>
+                            <Icon color={'#589FD5'} size={40} name={'person'}/>
+                        </View>)
+                    } else {
+                        return (<View style={styles.hidden}>
+                            <Icon color={'#1573AD'} size={30} name={'person-outline'}/>
+                        </View>)
+                    }
+                },
+            }
+        },
     },
     {
         initialRouteName: 'Home',
-        activeColor: '#f0edf6',
-        inactiveColor: '#3e2465',
-        barStyle: { backgroundColor: '#694fad' },
+        activeColor: 'white',
+        inactiveColor: 'grey',
+        barStyle: {backgroundColor: '#0F353F', height:50},
     }
 );
+
+const styles = StyleSheet.create({
+    image: {
+        zIndex: 1,
+        display: 'flex',
+        backgroundColor: 'red'
+
+    },
+    base: {
+        alignItems:'center',
+        width:50,
+        height:100,
+        bottom:10
+    },
+    hidden: {
+        alignItems:'center',
+        width:50,
+        height:100,
+        bottom:5
+    },
+});
 
 const Navbar = createAppContainer(NavbarContainer);
 

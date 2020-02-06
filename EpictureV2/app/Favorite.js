@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import {Button, Image, ScrollView, View, Text} from "react-native";
 import ImagePicker from 'react-native-image-picker';
-class Home extends Component {
+class Favorite extends Component {
 
     state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}};
 
@@ -19,7 +19,7 @@ class Home extends Component {
         this.props.navigation.addListener('willFocus', this.load);
     }
     load = () => {
-        this.showViral();
+        this.showFav();
     };
 
 
@@ -163,4 +163,4 @@ class Home extends Component {
     }
 }
 
-export default Home
+export default Favorite
