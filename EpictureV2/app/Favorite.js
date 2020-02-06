@@ -1,11 +1,11 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text} from "react-native";
+import {Button, Image, ScrollView, View, Text, ActivityIndicator} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 class Favorite extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false,};
 
     constructor (props) {
         super(props);
@@ -54,6 +54,10 @@ class Favorite extends Component {
         let page = 0;
         let favoritesSort = 'newest';
 
+        this.setState(previousState => (
+            {loading: true}
+        ));
+
         fetch('https://api.imgur.com/3/account/' + username + '/favorites/' + page + '/' + favoritesSort, {
             method: 'GET',
             headers: {
@@ -64,7 +68,7 @@ class Favorite extends Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 this.setState(previousState => (
-                    {images: responseJson["data"], current: 'follow', currentEnd: 2}
+                    {images: responseJson["data"], current: 'follow', currentEnd: 2, loading: false,}
                 ));
                 console.log('SUCCESS: ', responseJson);
                 this.displayImages(0);
@@ -81,7 +85,13 @@ class Favorite extends Component {
 
     displayImages(pages) {
         let count = 0;
-        if (this.state.images != null) {
+        if(this.state.loading === true) {
+            return (
+                <View>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            );
+        } else if (this.state.images != null) {
             return <ScrollView onScroll={({ nativeEvent }) => {
                 if (this.isCloseToBottom(nativeEvent)) {
                     this.setState(previousState => (

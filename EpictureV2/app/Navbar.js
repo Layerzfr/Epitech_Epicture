@@ -9,7 +9,7 @@ import {Button, Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import Favorite from "./Favorite";
 
-let currentPage = 'Home';
+let currentPage = "Home";
 
 const NavbarContainer = createMaterialBottomTabNavigator(
     {
@@ -17,12 +17,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Home,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = Home;
+                    currentPage = "Home";
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == Home) {
+                    if (currentPage == "Home") {
                         return (<View style={styles.base}>
                             <Image style={styles.image} source={require('../Assert/Icon/Home/home-current.png')}/>
                         </View>)
@@ -38,12 +38,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Search,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = Search;
+                    currentPage = "Search";
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == Search) {
+                    if (currentPage == "Search") {
                         return (<View style={styles.base}>
                             <Image style={{top:1,height: 30, width: 30, right:2}} source={require('../Assert/Icon/Search/search-line.png')}/>
                         </View>)
@@ -59,12 +59,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Upload,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = Upload;
+                    currentPage = "Upload";
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == Upload) {
+                    if (currentPage == "Upload") {
                         return (<View style={styles.base}>
                             <Image style={styles.image} source={require('../Assert/Icon/Croix/circleNoOutline.png')}/>
                         </View>)
@@ -80,12 +80,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Favorite,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = Favorite;
+                    currentPage = "Favorite";
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == Favorite) {
+                    if (currentPage == "Favorite") {
                         return (<View style={styles.base}>
                             <Image style={{top:1,height: 30, width: 33, right:2}} source={require('../Assert/Icon/Heart/heart.png')}/>
                         </View>)
@@ -101,12 +101,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Profile,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = Profile;
+                    currentPage = "Profile";
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == Profile) {
+                    if (currentPage == "Profile") {
                         return (<View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
                             <Image style={{top:12, height: '23%', width: '47%'}} source={require('../Assert/Icon/Profile/profile.png')}/>
                         </View>)
