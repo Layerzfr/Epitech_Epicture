@@ -1,17 +1,19 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text, ActivityIndicator} from 'react-native';
+import {Button, Image, ScrollView, View, Text, ActivityIndicator, TouchableOpacity} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import soundImg from "../Assert/Icon/Heart/heart.png";
+import muteImg from "../Assert/Icon/Heart/heart-outline.png";
 class Favorite extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false,};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true};
 
     constructor (props) {
         super(props);
         console.log('props:', props);
         this.setState(previousState => (
-            {token: this.props.screenProps.token, current: 'follow'}
+            {token: this.props.screenProps.token, current: 'follow', showSoundImg: true}
         ));
     }
 
@@ -82,6 +84,9 @@ class Favorite extends Component {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
     };
 
+    static navigationOptions = {
+        header: null,
+    };
 
     displayImages(pages) {
         let count = 0;
@@ -109,26 +114,34 @@ class Favorite extends Component {
                                     source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
                                 />
                                 <View>
-                                    <Button title='Fav/Unfav' onPress={() => this.unfav(image['id'])}/>
-                                    <Text>
-                                        {image['ups']} upvote
-                                    </Text>
-                                    <Text>
-                                        {image['downs']} downvote
-                                    </Text>
-                                    <Text>
-                                        {image['favorite_count']} fav
-                                    </Text>
-                                    <Text>
-                                        Logo partage
-                                    </Text>
+                                    <View>
+                                        <View style={{left:10}}>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.setState({ showSoundImg: !this.state.showSoundImg });
+                                                image['favorite'] = !image['favorite'];
+                                                this.unfav(image['id']);
+                                            }}>
+                                                {this.renderImage(image['favorite'])}
+                                            </TouchableOpacity>
+                                            <Image style={{bottom: 12, left: 60,height: 32, width: 37}} source={require('../Assert/Card/Logo/commenting-o.png')}/>
+                                        </View>
+                                        <Text>
+                                            {image['ups']} upvote
+                                        </Text>
+                                        <Text>
+                                            {image['downs']} downvote
+                                        </Text>
+                                        <Text>
+                                            {image['favorite_count']} fav
+                                        </Text>
+                                        <Text>
+                                            Logo partage
+                                        </Text>
+                                    </View>
                                 </View>
                                 <View>
                                     <Text>
                                         {image['comment_count']} commentaires
-                                    </Text>
-                                    <Text>
-                                        Ajouter un commentaire
                                     </Text>
                                 </View>
                                 <View>
@@ -171,6 +184,12 @@ class Favorite extends Component {
 
     );
     }
+
+    renderImage(isFavorite) {
+        var imgSource = isFavorite? soundImg : muteImg;
+        return (
+            <Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={ imgSource }/>);
+    };
 }
 
 export default Favorite

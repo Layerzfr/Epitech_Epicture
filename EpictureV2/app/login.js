@@ -14,7 +14,7 @@ class Login extends Component{
                 <ImageBackground source={require('../Assert/PNG/Fond.png')}
                                  style={{width: '100%', height: '100%'}}>
                     <View style={styles.logo}>
-                        <Image style={{alignSelf: 'center',width: '74%', height: '51%'}} source={require('../Assert/PNG/Logo.png')}/>
+                        <Image resizeMode={"contain"} style={{alignSelf: 'center',width: '74%', height: '51%'}} source={require('../Assert/PNG/Logo.png')}/>
                     </View>
                     <TouchableOpacity
                         style={styles.button} onPress={() => {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     logo: {
         display: 'flex',
         alignItems: 'center',
-        top: 200,
+        top: '30%',
         width: '65%',
         height: '30%',
         justifyContent: 'center',
