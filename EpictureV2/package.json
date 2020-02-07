@@ -15,6 +15,8 @@
     "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.5.3",
     "react-native-image-picker": "^2.2.1",
+    "react-native-image-zoom-viewer": "^2.2.27",
+    "react-native-lightbox": "^0.8.1",
     "react-native-modal-dropdown": "^0.7.0",
     "react-native-paper": "^3.5.1",
     "react-native-vector-icons": "^6.6.0",
