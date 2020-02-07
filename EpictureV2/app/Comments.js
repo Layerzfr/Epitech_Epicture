@@ -29,7 +29,7 @@ class Comments extends Component {
     render() {
         return(
             <View>
-                <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>TA MERE</Text>
+                {/*<Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>TA MERE</Text>*/}
             </View>
         )
     }

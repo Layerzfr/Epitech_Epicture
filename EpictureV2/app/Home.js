@@ -2,6 +2,7 @@ import React, {
     Component
 } from 'react';
 import {Button, Image, ScrollView, View, Text, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndicator} from "react-native";
+import {WebView} from "react-native-webview";
 import ImagePicker from 'react-native-image-picker';
 import soundImg from '../Assert/Icon/Heart/heart.png';
 import muteImg from '../Assert/Icon/Heart/heart-outline.png';
@@ -55,6 +56,31 @@ class Home extends Component {
                 console.error(error);
             });
     };
+
+    showAvatar(username){
+        let token = this.state.token;
+        let page = 0;
+        let favoritesSort = 'newest';
+
+        fetch('https://api.imgur.com/3/account/' + username+'/avatar', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson['data']['avatar']);
+                return (
+                    responseJson['data']['avatar']
+                )
+                console.log('SUCCESS: ', responseJson);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     showFav = () => {
         let token = this.state.token;
@@ -118,10 +144,14 @@ class Home extends Component {
                         count++;
                         return (
                             <View>
-                                <Image
-                                    style={{width: 500, height: 500}}
-                                    source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
-                                />
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, backgroundColor:'red'}}>
+                                    <TouchableOpacity style={{flex: 3, width: '100%', height: '100%', opacity: 1 }}>
+                                        <Image
+                                            style={{flex: 2,padding: '1%',width: '100%', height: '100%'}}
+                                            source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                                 <View>
                                     <View>
                                         <View style={{left:10}}>
@@ -132,7 +162,7 @@ class Home extends Component {
                                             }}>
                                                 {this.renderImage(image['favorite'])}
                                                 <View style={{top: 18}}>
-                                                    <Text style={{fontSize: 20, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                    <Text style={{fontSize: 20, left: 8, fontWeight:"bold", color:'#689FD1'}}>
                                                         {image['favorite_count']}
                                                     </Text>
                                                 </View>
@@ -156,7 +186,13 @@ class Home extends Component {
                                         </View>
                                     </View>
                                 </View>
-                                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',height:50 ,bottom: 20, backgroundColor:'red'}}>
+                                <View style={{flex: 1, paddingBottom: '1%', paddingTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:'auto'}}>
+                                    <Text style={{fontSize: 18, fontWeight:"500", color:'#345C70'}}>
+                                        <Text style={{fontWeight:"bold"}}>{image['account_url']}</Text>
+                                        <Text>: {image['title']}</Text>
+                                    </Text>
+                                </View>
+                                <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
                                     <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
                                         <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
                                             Voir les {image['comment_count']} commentaires
@@ -164,6 +200,7 @@ class Home extends Component {
                                     </TouchableOpacity>
                                     {this.displayComment(image)}
                                 </View>
+                                <View style={{width: '100%', height: '0.6%', backgroundColor: '#345C70', opacity:0.2}}/>
                                 <View>
 
                                 </View>
