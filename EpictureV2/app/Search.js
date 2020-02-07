@@ -3,10 +3,9 @@ import {
     ActivityIndicator,
     Image,
     Picker,
-    ScrollView, StyleProp,
+    ScrollView,
     StyleSheet,
     Text,
-    TextInput, TextStyle,
     TouchableOpacity,
     View
 } from 'react-native';
@@ -176,7 +175,6 @@ class Search extends Component {
         return(
             <View>
                 <SearchBar
-                            showLoading
                             inputStyle={{backgroundColor: '#EAEAEA'}}
                             containerStyle={styles.searchcontainer}
                             inputContainerStyle={{backgroundColor: '#EAEAEA'}}
@@ -217,10 +215,28 @@ class Search extends Component {
                         <Picker.Item label="Year" value="year" />
                         <Picker.Item label="All" value="all" />
                     </Picker>
+                    <View style={{backgroundColor:'grey', width:'100%', height:3, position: 'absolute', bottom:0, opacity: 0.5}}/>
                 </View>
                 {this.displaySearchImages()}
             </View>
         )
+    };
+    unfav = (id) => {
+
+        fetch('https://api.imgur.com/3/album/'+id+'/favorite', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     renderImage(isFavorite) {
         var imgSource = isFavorite? soundImg : muteImg;
@@ -238,18 +254,24 @@ const styles = StyleSheet.create({
     },
     picker: {
         flexDirection: 'row',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        justifyContent: 'center',
         width: '100%',
-        height: '20%'
+        height: 40
     },
     picker01: {
         flex: 1,
-        height: '80%',
+        alignItems: 'center',
+        height: 35,
+        width: '10%',
+        margin: '10%'
     },
     picker02: {
         flex: 1,
-        height: '80%',
+        alignItems: 'center',
+        height: 35,
+        width: '10%',
+        margin: '10%'
     }
 });
 
