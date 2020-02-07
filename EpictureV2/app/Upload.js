@@ -1,5 +1,15 @@
 import React, {Component} from 'react';
-import {Button, Image, Text, TextInput, View, PermissionsAndroid, ActivityIndicator} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    Image,
+    Text,
+    TextInput,
+    View,
+    PermissionsAndroid,
+    ActivityIndicator,
+    TouchableOpacity
+} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import LottieView from 'lottie-react-native';
 
@@ -169,9 +179,9 @@ class Upload extends Component {
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>);
         } else {
-            return (<Button title="Submit" onPress={this.uploadFile}>
-
-            </Button>)
+            return (
+                <TouchableOpacity onPress={this.uploadFile}><Text style={styles.textUpload}>Submit</Text></TouchableOpacity>
+            )
         }
     }
 
@@ -184,6 +194,18 @@ class Upload extends Component {
             }, 1500);
             return (
                 <LottieView source={require('../Assert/Animation/1798-check-animation.json')} autoPlay />
+            )
+        }
+    }
+
+    upload() {
+        if(this.state.loading === true ) {
+            return (<View>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>);
+        } else {
+            return (
+                <TouchableOpacity onPress={this.uploadFile}><Text style={styles.textUpload}>Submit</Text></TouchableOpacity>
             )
         }
     }
@@ -203,13 +225,12 @@ class Upload extends Component {
 
             return (
                 <View>
-                    <Text>Upload images</Text>
-                    <Text>
-                        Title:
+                    <Text style={{textAlign:'center',padding: "2%",fontSize: 20, fontWeight:"bold", color:'#699FD3'}}>
+                        Description:
                     </Text>
-                    <View>
+                    <View style={{flex:1, paddingRight:'2%',paddingLeft:'2%'}}>
                         <TextInput
-                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                            style={{width:'99%',height: 40, borderColor: 'gray', borderWidth: 1}}
                             onChangeText={text => {
                                 this.setState({
                                     title: text
@@ -220,12 +241,24 @@ class Upload extends Component {
                             value={this.state.title}
                         />
                     </View>
-                    <Button title="Choose File" onPress={this.selectFile.bind(this)}/>
-                    <Image
-                        source={{uri: this.state.filePath.uri}}
-                        style={{width: 250, height: 250}}
-                    />
-                    {this.submit()}
+                    <View>
+                        <View style={{width: '100%', height: '70%', top:'10%'}}>
+                            <Image style={{zIndex:0,width: '100%', height: '100%'}} resizeMode="contain" source={require('../Assert/PNG/UploadOutline.png')}/>
+                            <TouchableOpacity style={styles.upload} onPress={this.selectFile.bind(this)}><Text style={styles.textUpload}>Upload</Text></TouchableOpacity>
+                            <View style={{bottom:'150%',zIndex:1, justifyContent: 'center', alignItems: 'center',}}>
+                                <View style={{top:'55%',justifyContent: 'center', alignItems: 'center', width: '70%', height: '70%'}}>
+                                    <Image
+                                        source={{uri: this.state.filePath.uri}}
+                                        style={{zIndex:2, width: '90%', height: '90%'}}
+                                    />
+                                </View>
+                                <Image style={{bottom:'10%',width: '40%', height: '40%'}} resizeMode="contain" source={require('../Assert/PNG/Upload.png')}/>
+                            </View>
+                        </View>
+                        <View style={styles.submit}>
+                            {this.submit()}
+                        </View>
+                    </View>
                     {this.success()}
                     {this.displayError()}
                 </View>
@@ -234,4 +267,34 @@ class Upload extends Component {
     }
 }
 
+const styles = StyleSheet.create({
+    submit:{
+        width: '35%',
+        height: 40,
+        top: '20%',
+        borderRadius: 5,
+        backgroundColor: '#699FD3',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    upload:{
+        zIndex: 1,
+        width: '35%',
+        height: 40,
+        bottom: '30%',
+        borderRadius: 5,
+        backgroundColor: '#699FD3',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    textUpload:{
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 18,
+        width: '100%',
+        color:'white'
+    }
+});
+
 export default Upload;
+
