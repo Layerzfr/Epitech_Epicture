@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Button, Image, Text, TextInput, View, PermissionsAndroid} from 'react-native';
+import {Button, Image, Text, TextInput, View, PermissionsAndroid, ActivityIndicator} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import LottieView from 'lottie-react-native';
 
 class Upload extends Component {
 
-    state: {filePath: null, title: null, uploadStatus: false, imageData: null, imageError: null, image: {}};
+    state: {filePath: null, title: null, uploadStatus: false, imageData: null, imageError: null, image: {}, loading: false, success: false};
 
     componentDidMount(){
         // this.load();
@@ -43,6 +44,9 @@ class Upload extends Component {
         const options = {
             noData: true,
         };
+        this.setState(previousState => (
+            {loading: true,}
+        ));
 
 
         const data = new FormData();
@@ -54,43 +58,25 @@ class Upload extends Component {
             method: 'POST',
             body: data,
             headers: {
-                // Accept: 'application/json',
-                // 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.props.screenProps.token,
             },
         }).then((response) => response.json())
             .then((responseJson) => {
                 console.log('success: ', responseJson);
-
+                this.setState(previousState => (
+                    {imageError: false, uploadStatus: false, loading: false, filePath: {
+                            uri: null
+                        }, title: null, success: true}
+                ));
 
             })
             .catch((error) => {
                 console.error(error);
                 this.setState(previousState => (
-                    {imageError: true, uploadStatus: false,}
+                    {imageError: true, uploadStatus: false, loading: false,}
                 ));
 
             });
-        // if (this.state.image.didCancel) {
-        //     console.log('User cancelled image picker');
-        //     this.setState(previousState => (
-        //         {imageError: true, uploadStatus: false,}
-        //     ));
-        // } else if (this.state.image.error) {
-        //     console.log('ImagePicker Error: ', this.state.image.error);
-        //     this.setState(previousState => (
-        //         {imageError: true, uploadStatus: false,}
-        //     ));
-        // } else if (this.state.image.customButton) {
-        //     console.log('User tapped custom button: ', this.state.image.customButton);
-        //     this.setState(previousState => (
-        //         {imageError: true, uploadStatus: false,}
-        //     ));
-        // } else {
-        //     this.setState(previousState => (
-        //         {uploadStatus: true, imageError: false}
-        //     ));
-        // }
     }
 
     displayError() {
@@ -177,6 +163,31 @@ class Upload extends Component {
 
     };
 
+    submit() {
+        if(this.state.loading === true ) {
+            return (<View>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>);
+        } else {
+            return (<Button title="Submit" onPress={this.uploadFile}>
+
+            </Button>)
+        }
+    }
+
+    success() {
+        if(this.state.success === true) {
+            setTimeout(() => {
+                this.setState(previousState => (
+                    {success: false}
+                ));
+            }, 1500);
+            return (
+                <LottieView source={require('../Assert/Animation/1798-check-animation.json')} autoPlay />
+            )
+        }
+    }
+
     render() {
 
         if (this.state.uploadStatus === true) {
@@ -199,13 +210,14 @@ class Upload extends Component {
                     <View>
                         <TextInput
                             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                            onSubmitEditing={text => {
+                            onChangeText={text => {
                                 this.setState({
-                                    title: text.nativeEvent.text
+                                    title: text
                                 });
+                                console.log(text)
                             }
                             }
-                            value={this.value}
+                            value={this.state.title}
                         />
                     </View>
                     <Button title="Choose File" onPress={this.selectFile.bind(this)}/>
@@ -213,9 +225,8 @@ class Upload extends Component {
                         source={{uri: this.state.filePath.uri}}
                         style={{width: 250, height: 250}}
                     />
-                    <Button title="Submit" onPress={this.uploadFile}>
-
-                    </Button>
+                    {this.submit()}
+                    {this.success()}
                     {this.displayError()}
                 </View>
             );
