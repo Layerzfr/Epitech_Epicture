@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button, Image, ScrollView, View, StyleSheet, ImageBackground} from 'react-native';
+import {Button, Image, ScrollView, View, StyleSheet, ImageBackground, ActivityIndicator} from 'react-native';
 import {Text} from 'react-native-paper';
 
 class Profile extends React.Component {
 
-    state: {images: null, maxImage: 2};
+    state: {images: null, maxImage: 2, loading: false};
 
     componentDidMount(){
         // this.load();
@@ -29,7 +29,9 @@ class Profile extends React.Component {
     showOwnImages = () => {
         let token = this.props.screenProps.token;
         let username = this.props.screenProps.home['url'];
-        console.log('oui');
+        this.setState(previousState => (
+            {loading: true}
+        ));
 
         fetch('https://api.imgur.com/3/account/me/images', {
             method: 'GET',
@@ -41,7 +43,7 @@ class Profile extends React.Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 this.setState(previousState => (
-                    {images: responseJson["data"]}
+                    {images: responseJson["data"], loading: false}
                 ));
                 // console.log(responseJson["data"]);
                 this.displayImages(0);
@@ -54,7 +56,13 @@ class Profile extends React.Component {
     displayImages(pages) {
         let count = 0;
 
-        if (this.state.images != null) {
+        if(this.state.loading === true) {
+            return (
+                <View>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            );
+        } else if (this.state.images != null) {
 
             return <ScrollView onScroll={({ nativeEvent }) => {
                 if (this.isCloseToBottom(nativeEvent)) {
@@ -113,6 +121,7 @@ class Profile extends React.Component {
                 <View style={styles.header}>
                     <Image style={styles.backgroundImage} source={{uri: this.props.screenProps.home['cover']}}/>
                 </View>
+                <Button onPress={this.props.screenProps.disconnect} title='disconnect'></Button>
                 <Image style={styles.avatar} source={{uri: this.props.screenProps.home['avatar']}}/>
                 <View style={styles.body}>
                     <View style={styles.bodyContent}>
