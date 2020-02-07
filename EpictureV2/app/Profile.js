@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Image, ScrollView, View, StyleSheet, ImageBackground, ActivityIndicator} from 'react-native';
 import {Text} from 'react-native-paper';
+import Lightbox from 'react-native-lightbox';
 
 class Profile extends React.Component {
 
@@ -78,10 +79,12 @@ class Profile extends React.Component {
                         return (
                             <View>
                                 <Text> {image['title']}</Text>
-                                <Image
-                                    style={{width: 500, height: 500}}
-                                    source={{uri: 'https://i.imgur.com/' + image['id'] + '.jpg'}}
-                                />
+                                <Lightbox>
+                                    <Image
+                                        style={{ height: '100%', width: 'auto' }}
+                                        source={{ uri: 'https://i.imgur.com/' + image['id'] + '.jpg' }}
+                                    />
+                                </Lightbox>
                                 <View>
                                     <Text>
                                         {image['ups']} upvote

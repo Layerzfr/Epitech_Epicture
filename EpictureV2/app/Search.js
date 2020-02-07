@@ -14,6 +14,7 @@ import {SearchBar} from "react-native-elements";
 import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
 import Comments from "./Comments";
+import Lightbox from 'react-native-lightbox';
 
 class Search extends Component {
 
@@ -89,13 +90,13 @@ class Search extends Component {
                         count++;
                         return (
                             <View>
-                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, backgroundColor:'red'}}>
-                                    <TouchableOpacity style={{flex: 3, width: '100%', height: '100%', opacity: 1 }}>
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
+                                    <Lightbox>
                                         <Image
-                                            style={{flex: 2,padding: '1%',width: '100%', height: '100%'}}
-                                            source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                                            style={{ height: '100%', width: 'auto' }}
+                                            source={{ uri: 'https://i.imgur.com/' + image['cover'] + '.jpg' }}
                                         />
-                                    </TouchableOpacity>
+                                    </Lightbox>
                                 </View>
                                 <View>
                                     <View>

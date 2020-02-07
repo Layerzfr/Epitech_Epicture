@@ -6,6 +6,7 @@ import ImagePicker from 'react-native-image-picker';
 import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
 import Comments from "./Comments";
+import Lightbox from 'react-native-lightbox';
 class Favorite extends Component {
 
     state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true};
@@ -116,11 +117,13 @@ class Favorite extends Component {
                         count++;
                         return (
                             <View style={{paddingBottom: 53}}>
-                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, backgroundColor:'red'}}>
-                                    <Image
-                                        style={{flex: 2,padding: '1%',width: '100%', height: '100%'}}
-                                        source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
-                                    />
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
+                                    <Lightbox>
+                                        <Image
+                                            style={{ height: '100%', width: 'auto' }}
+                                            source={{ uri: 'https://i.imgur.com/' + image['cover'] + '.jpg' }}
+                                        />
+                                    </Lightbox>
 
                                 </View>
                                 <View>
