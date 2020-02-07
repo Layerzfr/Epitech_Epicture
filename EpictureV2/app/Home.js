@@ -3,16 +3,18 @@ import React, {
 } from 'react';
 import {Button, Image, ScrollView, View, Text, StyleSheet, TouchableOpacity, ImageBackground} from "react-native";
 import ImagePicker from 'react-native-image-picker';
+import soundImg from '../Assert/Icon/Heart/heart.png';
+import muteImg from '../Assert/Icon/Heart/heart-outline.png';
 
 class Home extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {},  showSoundImg: true};
 
     constructor (props) {
         super(props);
         console.log('props:', props);
         this.setState(previousState => (
-            {token: this.props.screenProps.token, current: 'follow'}
+            {token: this.props.screenProps.token, current: 'follow', showSoundImg: true}
         ));
     }
 
@@ -79,6 +81,10 @@ class Home extends Component {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
     };
 
+    static navigationOptions = {
+        header: null,
+    };
+
     displayImages(pages) {
         let count = 0;
         if (this.state.images != null) {
@@ -101,8 +107,12 @@ class Home extends Component {
                                 <View>
                                     <View>
                                         <View style={{left:10}}>
-                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => this.unfav(image['id'])}>
-                                                <Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={require('../Assert/Icon/Heart/heart-outline.png')}/>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.setState({ showSoundImg: !this.state.showSoundImg });
+                                                this.unfav(image['id']);
+                                            }}>
+                                                {this.renderImage()}
+                                                {/*<Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={require('../Assert/Icon/Heart/heart-outline.png')}/>*/}
                                             </TouchableOpacity>
                                             <Image style={{bottom: 12, left: 60,height: 32, width: 37}} source={require('../Assert/Card/Logo/commenting-o.png')}/>
                                         </View>
@@ -158,6 +168,7 @@ class Home extends Component {
     };
 
     render() {
+        var imgSource = this.state.showSoundImg? soundImg : muteImg;
         return (
             <View>
                 {this.displayImages(0)}
@@ -165,6 +176,12 @@ class Home extends Component {
 
     );
     }
+
+    renderImage() {
+        var imgSource = this.state.showSoundImg? soundImg : muteImg;
+        return (
+                <Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={ imgSource }/>);
+    };
 }
 
 export default Home
