@@ -18,7 +18,7 @@ class Login extends Component{
                     </View>
                     <TouchableOpacity
                         style={styles.button} onPress={() => {
-                        Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=92a224e08023cdf&response_type=token').then(r =>{} )
+                        Linking.openURL('https://api.imgur.com/oauth2/authorize?client_id=92a224e08023cdf&response_type=token').then(r =>{})
                     }}
                     >
                         <Text style={styles.text}>Get Started</Text>
