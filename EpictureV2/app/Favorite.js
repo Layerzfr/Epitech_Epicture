@@ -5,6 +5,7 @@ import {Button, Image, ScrollView, View, Text, ActivityIndicator, TouchableOpaci
 import ImagePicker from 'react-native-image-picker';
 import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
+import Comments from "./Comments";
 class Favorite extends Component {
 
     state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true};
@@ -88,6 +89,12 @@ class Favorite extends Component {
         header: null,
     };
 
+    displayComment(image) {
+        if (image['showcomments'] === true) {
+            return (<Comments comment={image['comment']}></Comments>)
+        }
+    }
+
     displayImages(pages) {
         let count = 0;
         if(this.state.loading === true) {
@@ -108,11 +115,14 @@ class Favorite extends Component {
                     if(count <= this.state.maxImage) {
                         count++;
                         return (
-                            <View>
-                                <Image
-                                    style={{width: 500, height: 500}}
-                                    source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
-                                />
+                            <View style={{paddingBottom: 53}}>
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, backgroundColor:'red'}}>
+                                    <Image
+                                        style={{flex: 2,padding: '1%',width: '100%', height: '100%'}}
+                                        source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}
+                                    />
+
+                                </View>
                                 <View>
                                     <View>
                                         <View style={{left:10}}>
@@ -122,33 +132,47 @@ class Favorite extends Component {
                                                 this.unfav(image['id']);
                                             }}>
                                                 {this.renderImage(image['favorite'])}
+                                                <View style={{top: 18}}>
+                                                    <Text style={{fontSize: 20, left: 8, fontWeight:"bold", color:'#689FD1'}}>
+                                                        {image['favorite_count']}
+                                                    </Text>
+                                                </View>
                                             </TouchableOpacity>
-                                            <Image style={{bottom: 12, left: 60,height: 32, width: 37}} source={require('../Assert/Card/Logo/commenting-o.png')}/>
                                         </View>
-                                        <Text>
-                                            {image['ups']} upvote
-                                        </Text>
-                                        <Text>
-                                            {image['downs']} downvote
-                                        </Text>
-                                        <Text>
-                                            {image['favorite_count']} fav
-                                        </Text>
-                                        <Text>
-                                            Logo partage
-                                        </Text>
+                                        <View style={{display: 'flex', flexDirection:'row', bottom:10 , left:200}}>
+                                            <View style={{height: 25, width: 19}}>
+                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrow.png')}/>
+                                            </View>
+                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                {image['ups']}
+                                            </Text>
+                                        </View>
+                                        <View style={{display: 'flex', flexDirection:'row', bottom:37 , left:300}}>
+                                            <View style={{height: 25, width: 19}}>
+                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>
+                                            </View>
+                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                {image['downs']}
+                                            </Text>
+                                        </View>
                                     </View>
                                 </View>
-                                <View>
-                                    <Text>
-                                        {image['comment_count']} commentaires
+                                <View style={{flex: 1, paddingBottom: '1%', paddingTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:'auto'}}>
+                                    <Text style={{fontSize: 18, fontWeight:"500", color:'#345C70'}}>
+                                        <Text style={{fontWeight:"bold"}}>{image['account_url']}</Text>
+                                        <Text>: {image['title']}</Text>
                                     </Text>
                                 </View>
-                                <View>
-
+                                <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
+                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
+                                        <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
+                                            Voir les {image['comment_count']} commentaires
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {this.displayComment(image)}
                                 </View>
+                                <View style={{width: '100%', height: '0.6%', backgroundColor: '#345C70', opacity:0.2}}/>
                             </View>
-
                         );
                     }
                     count++;
