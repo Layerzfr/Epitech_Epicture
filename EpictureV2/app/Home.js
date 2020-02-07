@@ -121,7 +121,7 @@ class Home extends Component {
                                                 this.setState({ showSoundImg: !this.state.showSoundImg });
                                                 this.unfav(image['id']);
                                             }}>
-                                                {this.renderImage()}
+                                                {this.renderImage(image['favorite'])}
                                                 {/*<Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={require('../Assert/Icon/Heart/heart-outline.png')}/>*/}
                                             </TouchableOpacity>
                                             <Image style={{bottom: 12, left: 60,height: 32, width: 37}} source={require('../Assert/Card/Logo/commenting-o.png')}/>
@@ -170,17 +170,11 @@ class Home extends Component {
             },
         }).then((response) => response.json())
             .then((responseJson) => {
-                this.showFav();
+                console.log('SUCCESS');
             })
             .catch((error) => {
                 console.error(error);
             });
-    };
-
-    wave = {
-      if (current) {
-
-      }
     };
 
     loading()
@@ -204,8 +198,8 @@ class Home extends Component {
     );
     }
 
-    renderImage() {
-        var imgSource = this.state.showSoundImg? soundImg : muteImg;
+    renderImage(isFavorite) {
+        var imgSource = isFavorite? soundImg : muteImg;
         return (
                 <Image style={{top: 20,zIndex: 1, height: 32, width: 35}} source={ imgSource }/>);
     };
