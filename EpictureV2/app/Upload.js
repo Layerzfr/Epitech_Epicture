@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Image, Text, TextInput, View} from 'react-native';
+import {Button, Image, Text, TextInput, View, PermissionsAndroid} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 
 class Upload extends Component {
@@ -105,7 +105,38 @@ class Upload extends Component {
         }
     }
 
-    selectFile = () => {
+    selectFile = async () => {
+
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: 'Epicture',
+                    message:
+                        'Epicture a besoin de votre autorisation ' +
+                        'pour utiliser ou prendre une photo.',
+                    buttonNeutral: 'Plus tard',
+                    buttonNegative: 'Annuler',
+                    buttonPositive: 'OK',
+                },
+            );
+            //
+                const grantedStockage = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'Epicture',
+                        message:
+                            'Epicture a besoin de votre autorisation ' +
+                            'pour utiliser ou prendre une photo.',
+                        buttonNeutral: 'Plus tard',
+                        buttonNegative: 'Annuler',
+                        buttonPositive: 'OK',
+                    },
+                );
+        } catch (err) {
+            console.warn(err);
+        }
+
         ImagePicker.showImagePicker({
             title: 'Choisir un fichier',
             // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
@@ -132,17 +163,18 @@ class Upload extends Component {
                 //     image: response,
                 // });
 
-                    this.setState(previousState => (
-                        {
-                            filePath: source,
-                            imageData: response.data,
-                            image: response,
-                        }
-                    ));
+                this.setState(previousState => (
+                    {
+                        filePath: source,
+                        imageData: response.data,
+                        image: response,
+                    }
+                ));
 
                 console.log(this.state.filePath.uri);
             }
         });
+
     };
 
     render() {
