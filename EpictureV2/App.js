@@ -30,6 +30,7 @@ import {
 import Login from './app/login';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import Home from './app/Home';
+import global from './app/global';
 
 const Test = createMaterialBottomTabNavigator(
     {
@@ -159,6 +160,7 @@ class App extends React.Component{
     this.setState(previousState => (
         {logged: false, userInfo: null}
     ));
+    global.screen = "Home";
   }
 
   searchImages = async (search) => {

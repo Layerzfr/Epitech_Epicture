@@ -273,9 +273,9 @@ class Profile extends Component {
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
+                    <Button onPress={this.props.screenProps.disconnect} title='disconnect'></Button>
                     <Image style={styles.backgroundImage} source={{uri: this.props.screenProps.home['cover']}}/>
                 </View>
-                {/*<Button onPress={this.props.screenProps.disconnect} title='disconnect'></Button>*/}
                 <Image style={styles.avatar} source={{uri: this.props.screenProps.home['avatar']}}/>
                 <View style={styles.body}>
                     <View style={styles.bodyContent}>
