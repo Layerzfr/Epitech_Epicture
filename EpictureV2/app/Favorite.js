@@ -105,7 +105,7 @@ class Favorite extends Component {
                 </View>
             );
         } else if (this.state.images != null) {
-            return <ScrollView onScroll={({ nativeEvent }) => {
+            return <View style={{flex:0}}><ScrollView onScroll={({ nativeEvent }) => {
                 if (this.isCloseToBottom(nativeEvent)) {
                     this.setState(previousState => (
                         {maxImage: this.state.maxImage + 2}
@@ -116,7 +116,7 @@ class Favorite extends Component {
                     if(count <= this.state.maxImage) {
                         count++;
                         return (
-                            <View style={{paddingBottom: 53}}>
+                            <View>
                                 <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
                                     <Lightbox>
                                         <Image
@@ -174,7 +174,6 @@ class Favorite extends Component {
                                     </TouchableOpacity>
                                     {this.displayComment(image)}
                                 </View>
-                                <View style={{width: '100%', height: '0.6%', backgroundColor: '#345C70', opacity:0.2}}/>
                             </View>
                         );
                     }
@@ -182,6 +181,8 @@ class Favorite extends Component {
 
                 })}
             </ScrollView>
+                <View style={{flex: 0,position: 'absolute',height:'50%',bottom: 0, backgroundColor:'red'}}/>
+            </View>
         }
     }
 
