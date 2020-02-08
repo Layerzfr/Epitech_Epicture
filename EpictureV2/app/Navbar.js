@@ -8,8 +8,8 @@ import {colors, Icon} from 'react-native-elements';
 import {Button, Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 import Favorite from "./Favorite";
+import global from './global';
 
-let currentPage = "Home";
 
 const NavbarContainer = createMaterialBottomTabNavigator(
     {
@@ -17,12 +17,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Home,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = 'Home';
+                    global.screen = 'Home';
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == 'Home') {
+                    if (global.screen == 'Home') {
                         return (<View style={styles.base}>
                             <Image style={styles.image} source={require('../Assert/Icon/Home/home-current.png')}/>
                         </View>)
@@ -38,12 +38,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Search,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = 'Search';
+                    global.screen = 'Search';
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == 'Search') {
+                    if (global.screen == 'Search') {
                         return (<View style={styles.base}>
                             <Image style={{top:1,height: 30, width: 30, right:2}} source={require('../Assert/Icon/Search/search-line.png')}/>
                         </View>)
@@ -59,12 +59,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Upload,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = 'Upload';
+                    global.screen = 'Upload';
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == 'Upload') {
+                    if (global.screen == 'Upload') {
                         return (<View style={styles.base}>
                             <Image style={styles.image} source={require('../Assert/Icon/Croix/circleNoOutline.png')}/>
                         </View>)
@@ -80,12 +80,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Favorite,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = 'Favorite';
+                    global.screen = 'Favorite';
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == 'Favorite') {
+                    if (global.screen == 'Favorite') {
                         return (<View style={styles.base}>
                             <Image style={{top:1,height: 30, width: 33, right:2}} source={require('../Assert/Icon/Heart/heart.png')}/>
                         </View>)
@@ -101,12 +101,12 @@ const NavbarContainer = createMaterialBottomTabNavigator(
             screen: Profile,
             navigationOptions: {
                 tabBarOnPress: ({navigation, defaultHandler}) => {
-                    currentPage = 'Profile';
+                    global.screen = 'Profile';
                     defaultHandler();
                 },
                 tabBarLabel: ' ',
                 tabBarIcon: () => {
-                    if (currentPage == 'Profile') {
+                    if (global.screen == 'Profile') {
                         return (<View style={{alignItems:'center', width:50, height:150, bottom: 12, right:5}}>
                             <Image style={{top:12, height: '23%', width: '47%'}} source={require('../Assert/Icon/Profile/profile.png')}/>
                         </View>)
@@ -121,7 +121,7 @@ const NavbarContainer = createMaterialBottomTabNavigator(
         },
     },
     {
-        initialRouteName: currentPage,
+        initialRouteName: global.screen,
         activeColor: 'white',
         inactiveColor: 'grey',
         barStyle: {backgroundColor: '#0F353F', height:53},
