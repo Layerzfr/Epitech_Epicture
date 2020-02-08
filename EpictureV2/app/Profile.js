@@ -16,10 +16,14 @@ import Lightbox from 'react-native-lightbox';
 import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
 import Comments from "./Comments";
+import AlertPro from "react-native-alert-pro";
+import {Icon} from 'react-native-elements';
 
 class Profile extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true,
+            imageFocus: null
+    };
 
     constructor(props) {
         super(props);
@@ -123,6 +127,38 @@ class Profile extends Component {
                         count++;
                         return (
                             <View>
+                                {/*<AlertPro*/}
+                                {/*    ref={ref => {*/}
+                                {/*        this.AlertPro = ref;*/}
+                                {/*    }}*/}
+                                {/*    onConfirm={() => {*/}
+                                {/*        this.deleteImage(image['id']);*/}
+                                {/*        this.AlertPro.close()*/}
+                                {/*    }}*/}
+                                {/*    onCancel={() => this.AlertPro.close()}*/}
+                                {/*    title="Delete confirmation"*/}
+                                {/*    message="Are you sure to delete the entry?"*/}
+                                {/*    textCancel="Cancel"*/}
+                                {/*    textConfirm="Delete"*/}
+                                {/*    customStyles={{*/}
+                                {/*        mask: {*/}
+                                {/*            backgroundColor: "transparent"*/}
+                                {/*        },*/}
+                                {/*        container: {*/}
+                                {/*            borderWidth: 1,*/}
+                                {/*            borderColor: "#9900cc",*/}
+                                {/*            shadowColor: "#000000",*/}
+                                {/*            shadowOpacity: 0.1,*/}
+                                {/*            shadowRadius: 10*/}
+                                {/*        },*/}
+                                {/*        buttonCancel: {*/}
+                                {/*            backgroundColor: "#4da6ff"*/}
+                                {/*        },*/}
+                                {/*        buttonConfirm: {*/}
+                                {/*            backgroundColor: "#ffa31a"*/}
+                                {/*        }*/}
+                                {/*    }}*/}
+                                {/*/>*/}
                                 <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
                                     <Lightbox>
                                         <Image
@@ -163,6 +199,19 @@ class Profile extends Component {
                                                 {image['downs']}
                                             </Text>
                                         </View>
+                                        <View style={{display: 'flex', flexDirection:'row' , bottom: 67, left:365}}>
+                                            <View style={{height: 25, width: 25}}>
+                                                <TouchableOpacity  onPress={() => {
+                                                    this.setState(previousState => (
+                                                        {imageFocus: image['id']}
+                                                    ));
+                                                    this.AlertPro.open()
+                                                }}>
+                                                    <Icon name={'delete'} color="#419FD9" size={30}></Icon>
+                                                </TouchableOpacity>
+                                                {/*<Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>*/}
+                                            </View>
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={{flex: 1, paddingBottom: '1%', paddingTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:'auto'}}>
@@ -194,6 +243,31 @@ class Profile extends Component {
         }
     }
 
+    deleteImage(id){
+        this.setState(previousState => (
+            {loading: true,}
+        ));
+        fetch('https://api.imgur.com/3/image/'+id, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS => ', responseJson);
+                this.setState(previousState => (
+                    {loading: false,}
+                ));
+                this.showOwnImages();
+            })
+            .catch((error) => {
+                console.error(error);
+                this.setState(previousState => (
+                    {loading: false,}
+                ));
+            });
+    }
+
     render() {
         let imgSource = this.state.showSoundImg? soundImg : muteImg;
         return(
@@ -207,6 +281,38 @@ class Profile extends Component {
                     <View style={styles.bodyContent}>
                         <Text style={styles.name}>{this.props.screenProps.home['url']}</Text>
                     </View>
+                    <AlertPro
+                        ref={ref => {
+                            this.AlertPro = ref;
+                        }}
+                        onConfirm={() => {
+                            this.deleteImage(this.state.imageFocus);
+                            this.AlertPro.close()
+                        }}
+                        onCancel={() => this.AlertPro.close()}
+                        title="Confirmation"
+                        message="Etes-vous sûr de vouloir supprimer cette image ?"
+                        textCancel="Annuler"
+                        textConfirm="Supprimer"
+                        customStyles={{
+                            mask: {
+                                backgroundColor: "transparent"
+                            },
+                            container: {
+                                borderWidth: 1,
+                                borderColor: "#9900cc",
+                                shadowColor: "#000000",
+                                shadowOpacity: 0.1,
+                                shadowRadius: 10
+                            },
+                            buttonCancel: {
+                                backgroundColor: "#4da6ff"
+                            },
+                            buttonConfirm: {
+                                backgroundColor: "#EB301A"
+                            }
+                        }}
+                    />
                     {this.displayImages(0)}
                 </View>
             </ScrollView>
