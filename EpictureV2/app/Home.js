@@ -146,12 +146,6 @@ class Home extends Component {
                         return (
                             <View>
                                 <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
-                                    {/*<TouchableOpacity style={{flex: 3, width: '100%', height: '100%', opacity: 1 }}>*/}
-                                    {/*    <Image*/}
-                                    {/*        style={{flex: 2,padding: '1%',width: '100%', height: '100%'}}*/}
-                                    {/*        source={{uri: 'https://i.imgur.com/' + image['cover'] + '.jpg'}}*/}
-                                    {/*    />*/}
-                                    {/*</TouchableOpacity>*/}
                                     <Lightbox>
                                         <Image
                                             style={{ height: '100%', width: 'auto' }}
