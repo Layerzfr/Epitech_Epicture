@@ -127,38 +127,18 @@ class Profile extends Component {
                         count++;
                         return (
                             <View>
-                                {/*<AlertPro*/}
-                                {/*    ref={ref => {*/}
-                                {/*        this.AlertPro = ref;*/}
-                                {/*    }}*/}
-                                {/*    onConfirm={() => {*/}
-                                {/*        this.deleteImage(image['id']);*/}
-                                {/*        this.AlertPro.close()*/}
-                                {/*    }}*/}
-                                {/*    onCancel={() => this.AlertPro.close()}*/}
-                                {/*    title="Delete confirmation"*/}
-                                {/*    message="Are you sure to delete the entry?"*/}
-                                {/*    textCancel="Cancel"*/}
-                                {/*    textConfirm="Delete"*/}
-                                {/*    customStyles={{*/}
-                                {/*        mask: {*/}
-                                {/*            backgroundColor: "transparent"*/}
-                                {/*        },*/}
-                                {/*        container: {*/}
-                                {/*            borderWidth: 1,*/}
-                                {/*            borderColor: "#9900cc",*/}
-                                {/*            shadowColor: "#000000",*/}
-                                {/*            shadowOpacity: 0.1,*/}
-                                {/*            shadowRadius: 10*/}
-                                {/*        },*/}
-                                {/*        buttonCancel: {*/}
-                                {/*            backgroundColor: "#4da6ff"*/}
-                                {/*        },*/}
-                                {/*        buttonConfirm: {*/}
-                                {/*            backgroundColor: "#ffa31a"*/}
-                                {/*        }*/}
-                                {/*    }}*/}
-                                {/*/>*/}
+                                <View style={{display: 'flex', width:'100%', height: 30, backgroundColor:'#EAEAEA'}}>
+                                    <View>
+                                        <TouchableOpacity style={{alignSelf: 'flex-end', right:'1%',height: '100%', width: 25}} onPress={() => {
+                                            this.setState(previousState => (
+                                                {imageFocus: image['id']}
+                                            ));
+                                            this.AlertPro.open()
+                                        }}>
+                                            <Icon name={'delete'} color="#419FD9" size={30}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                                 <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
                                     <Lightbox>
                                         <Image
@@ -199,19 +179,6 @@ class Profile extends Component {
                                                 {image['downs']}
                                             </Text>
                                         </View>
-                                        <View style={{display: 'flex', flexDirection:'row' , bottom: 67, left:365}}>
-                                            <View style={{height: 25, width: 25}}>
-                                                <TouchableOpacity  onPress={() => {
-                                                    this.setState(previousState => (
-                                                        {imageFocus: image['id']}
-                                                    ));
-                                                    this.AlertPro.open()
-                                                }}>
-                                                    <Icon name={'delete'} color="#419FD9" size={30}></Icon>
-                                                </TouchableOpacity>
-                                                {/*<Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>*/}
-                                            </View>
-                                        </View>
                                     </View>
                                 </View>
                                 <View style={{flex: 1, paddingBottom: '1%', paddingTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:'auto'}}>
@@ -221,7 +188,7 @@ class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
-                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
+                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={() => image['showcomments'] = true}>
                                         <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
                                             Voir les {image['comment_count']} commentaires
                                         </Text>
@@ -273,8 +240,13 @@ class Profile extends Component {
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
-                    <Button onPress={this.props.screenProps.disconnect} title='disconnect'></Button>
-                    <Image style={styles.backgroundImage} source={{uri: this.props.screenProps.home['cover']}}/>
+                    <ImageBackground style={styles.backgroundImage} source={{uri: this.props.screenProps.home['cover']}}>
+                        <View style={{zIndex:10,display: 'flex',width:'100%', height: 30}}>
+                            <TouchableOpacity style={{alignSelf: 'flex-end', right:'1%', top: '20%',height: '100%', width: 25}} onPress={this.props.screenProps.disconnect} title='disconnect'>
+                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/PNG/SignOut.png')}/>
+                            </TouchableOpacity>
+                        </View>
+                    </ImageBackground>
                 </View>
                 <Image style={styles.avatar} source={{uri: this.props.screenProps.home['avatar']}}/>
                 <View style={styles.body}>
@@ -349,6 +321,7 @@ const styles = StyleSheet.create({
         height:200,
     },
     backgroundImage: {
+        zIndex: 0,
         flex: 1,
         width: null,
         height: null,
