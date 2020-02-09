@@ -240,7 +240,7 @@ class Upload extends Component {
                             </View>
                         </View>
                         <Text style={{textAlign:'center',padding: "2%",fontSize: 20, fontWeight:"bold", color:'#699FD3'}}>
-                            Description:
+                            Titre:
                         </Text>
                         <TextInput
                             style={{zIndex:1,alignSelf:'center', width:'95%',height: 40, borderColor: 'gray', borderWidth: 1, top:'1%'}}
