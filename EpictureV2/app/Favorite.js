@@ -1,7 +1,7 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {Button, Image, ScrollView, View, Text, ActivityIndicator, TouchableOpacity, TextInput} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
@@ -9,7 +9,9 @@ import Comments from "./Comments";
 import Lightbox from 'react-native-lightbox';
 class Favorite extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {}, loading: false, showSoundImg: true,
+        comment: null, newComment: null, currentImageId: null,
+    };
 
     constructor (props) {
         super(props);
@@ -18,6 +20,30 @@ class Favorite extends Component {
             {token: this.props.screenProps.token, current: 'follow', showSoundImg: true}
         ));
     }
+
+    displayComment = (image) => {
+        console.log('image => ', image);
+        if (image !== undefined) {
+            fetch('https://api.imgur.com/3/gallery/' + image['id'] + '/comments/best', {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.token
+                },
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('SUCCESS', responseJson);
+                    this.setState(previousState => (
+                        {comment: responseJson, currentImageId: image['id']}
+                    ));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }
+
 
     componentDidMount(){
         this.props.navigation.addListener('willFocus', this.load);
@@ -167,12 +193,11 @@ class Favorite extends Component {
                                     </Text>
                                 </View>
                                 <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
-                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
+                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={() => {this.displayComment(image)}}>
                                         <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
                                             Voir les {image['comment_count']} commentaires
                                         </Text>
                                     </TouchableOpacity>
-                                    {this.displayComment(image)}
                                 </View>
                             </View>
                         );
@@ -184,6 +209,24 @@ class Favorite extends Component {
                 <View style={{flex: 0,position: 'absolute',height:'50%',bottom: 0, backgroundColor:'red'}}/>
             </View>
         }
+    }
+
+    addComment(imageId, comment) {
+        const data = new FormData();
+        data.append('comment', comment);
+        fetch('https://api.imgur.com/3/gallery/'+imageId+'/comment', {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token,
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     unfav = (id) => {
@@ -205,12 +248,37 @@ class Favorite extends Component {
     };
 
     render() {
-        return (
-            <View>
-                {this.displayImages(0)}
-            </View>
+        if(this.state.comment !== null) {
+            return (<ScrollView>
+                <Button title='Retour' onPress={() => {this.setState(previousState => (
+                    {comment: null, currentImageId: null, newComment: null}
+                ))}}></Button>
+                <View>
+                    <Text>Ajouter un commentaire :</Text>
+                    <TextInput onChangeText={text => {
+                        this.setState({
+                            newComment: text
+                        });
+                    }}></TextInput>
+                    <Button title='Ajouter un commentaire' onPress={() => {
+                        this.addComment(this.state.currentImageId, this.state.newComment)
+                    }}></Button>
+                </View>
+                <Text>Comment</Text>
+                {this.state.comment['data'].map((comment) => {
+                    return(<Text>
+                        {comment.author} : {comment.comment}
+                    </Text>)
+                })}
+            </ScrollView>);
+        }else {
+            return (
+                <View>
+                    {this.displayImages(0)}
+                </View>
 
-    );
+            );
+        }
     }
 
     renderImage(isFavorite) {
