@@ -1,7 +1,18 @@
 import React, {
     Component
 } from 'react';
-import {Button, Image, ScrollView, View, Text, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndicator} from "react-native";
+import {
+    Button,
+    Image,
+    ScrollView,
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ImageBackground,
+    ActivityIndicator,
+    TextInput,
+} from 'react-native';
 import {WebView} from "react-native-webview";
 import ImagePicker from 'react-native-image-picker';
 import soundImg from '../Assert/Icon/Heart/heart.png';
@@ -11,7 +22,9 @@ import Lightbox from 'react-native-lightbox';
 
 class Home extends Component {
 
-    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {},  showSoundImg: true, loading: false};
+    state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {},  showSoundImg: true, loading: false,
+            comment: null, newComment: null, currentImageId: null,
+    };
 
     constructor (props) {
         super(props);
@@ -117,11 +130,35 @@ class Home extends Component {
         header: null,
     };
 
-    displayComment(image) {
-        if (image['showcomments'] === true) {
-            return (<Comments comment={image['comment']}></Comments>)
+    displayComment = (image) => {
+        console.log('image => ', image);
+        // return (
+        //     <ScrollView>
+        //         {/*{image['comment'].map((comment) => {*/}
+        //         {/*    console.log(comment);*/}
+        //         {/*})}*/}
+        //     </ScrollView>
+        // )
+        if(image !== undefined) {
+            fetch('https://api.imgur.com/3/gallery/'+image['id']+'/comments/best', {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.token
+                },
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('SUCCESS', responseJson);
+                    this.setState(previousState => (
+                        {comment: responseJson, currentImageId: image['id']}
+                    ));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            }
         }
-    }
 
     displayImages(pages) {
         let count = 0;
@@ -194,12 +231,12 @@ class Home extends Component {
                                     </Text>
                                 </View>
                                 <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
-                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
+                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={() => {this.displayComment(image)}}>
                                         <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
                                             Voir les {image['comment_count']} commentaires
                                         </Text>
                                     </TouchableOpacity>
-                                    {this.displayComment(image)}
+                                    {/*{this.displayComment(image)}*/}
                                 </View>
                                 <View style={{width: '100%', height: '0.6%', backgroundColor: '#345C70', opacity:0.2}}/>
                                 <View>
@@ -245,14 +282,57 @@ class Home extends Component {
         }
     }
 
+    addComment(imageId, comment) {
+        const data = new FormData();
+        data.append('comment', comment);
+        fetch('https://api.imgur.com/3/gallery/'+imageId+'/comment', {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token,
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     render() {
         var imgSource = this.state.showSoundImg? soundImg : muteImg;
-        return (
-            <View>
-                {this.displayImages(0)}
-            </View>
+        if(this.state.comment !== null) {
+            return (<ScrollView>
+                <Button title='Retour' onPress={() => {this.setState(previousState => (
+                    {comment: null, currentImageId: null, newComment: null}
+                ))}}></Button>
+                <View>
+                    <Text>Ajouter un commentaire :</Text>
+                    <TextInput onChangeText={text => {
+                        this.setState({
+                            newComment: text
+                        });
+                    }}></TextInput>
+                    <Button title='Ajouter un commentaire' onPress={() => {
+                        this.addComment(this.state.currentImageId, this.state.newComment)
+                    }}></Button>
+                </View>
+                <Text>Comment</Text>
+                {this.state.comment['data'].map((comment) => {
+                return(<Text>
+                    {comment.author} : {comment.comment}
+                </Text>)
+                })}
+            </ScrollView>);
+        }else {
+            return (
+                <View>
+                    {this.displayImages(0)}
+                </View>
 
-    );
+            );
+        }
     }
 
     renderImage(isFavorite) {
