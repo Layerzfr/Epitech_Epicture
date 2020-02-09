@@ -23,7 +23,9 @@ class Login extends Component{
                     >
                         <Text style={styles.text}>Get Started</Text>
                     </TouchableOpacity>
+{/*
                     <View style={styles.buttonShadow}/>
+*/}
                 </ImageBackground>
             </View>
         );
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 370,
+        top: '50%',
     },
     buttonShadow:{
         zIndex: 0,
@@ -67,8 +69,8 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: '#262626',
         alignSelf: 'center',
-        bottom: 46,
         opacity: 0.15,
+        bottom: '10%'
     },
 });
 

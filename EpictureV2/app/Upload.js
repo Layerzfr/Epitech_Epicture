@@ -180,7 +180,7 @@ class Upload extends Component {
             </View>);
         } else {
             return (
-                <TouchableOpacity onPress={this.uploadFile}><Text style={styles.textUpload}>Submit</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.submit} onPress={this.uploadFile}><Text style={styles.textUpload}>Submit</Text></TouchableOpacity>
             )
         }
     }
@@ -225,24 +225,8 @@ class Upload extends Component {
 
             return (
                 <View>
-                    <Text style={{textAlign:'center',padding: "2%",fontSize: 20, fontWeight:"bold", color:'#699FD3'}}>
-                        Description:
-                    </Text>
-                    <View style={{flex:1, paddingRight:'2%',paddingLeft:'2%'}}>
-                        <TextInput
-                            style={{width:'99%',height: 40, borderColor: 'gray', borderWidth: 1}}
-                            onChangeText={text => {
-                                this.setState({
-                                    title: text
-                                });
-                                console.log(text)
-                            }
-                            }
-                            value={this.state.title}
-                        />
-                    </View>
                     <View>
-                        <View style={{width: '100%', height: '70%', top:'10%'}}>
+                        <View style={{width: '100%', height: '70%', top:'1%'}}>
                             <Image style={{zIndex:0,width: '100%', height: '100%'}} resizeMode="contain" source={require('../Assert/PNG/UploadOutline.png')}/>
                             <TouchableOpacity style={styles.upload} onPress={this.selectFile.bind(this)}><Text style={styles.textUpload}>Upload</Text></TouchableOpacity>
                             <View style={{bottom:'150%',zIndex:1, justifyContent: 'center', alignItems: 'center',}}>
@@ -255,9 +239,20 @@ class Upload extends Component {
                                 <Image style={{bottom:'10%',width: '40%', height: '40%'}} resizeMode="contain" source={require('../Assert/PNG/Upload.png')}/>
                             </View>
                         </View>
-                        <View style={styles.submit}>
-                            {this.submit()}
-                        </View>
+                        <Text style={{textAlign:'center',padding: "2%",fontSize: 20, fontWeight:"bold", color:'#699FD3'}}>
+                            Description:
+                        </Text>
+                        <TextInput
+                            style={{zIndex:1,alignSelf:'center', width:'95%',height: 40, borderColor: 'gray', borderWidth: 1, top:'1%'}}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    title: text
+                                });
+                            }
+                            }
+                            value={this.state.title}
+                        />
+                        {this.submit()}
                     </View>
                     {this.success()}
                     {this.displayError()}
@@ -269,13 +264,15 @@ class Upload extends Component {
 
 const styles = StyleSheet.create({
     submit:{
+        flex: 1,
+        zIndex: 0,
         width: '35%',
         height: 40,
-        top: '20%',
         borderRadius: 5,
         backgroundColor: '#699FD3',
         justifyContent: 'center',
         alignSelf: 'center',
+        top: '10%'
     },
     upload:{
         zIndex: 1,

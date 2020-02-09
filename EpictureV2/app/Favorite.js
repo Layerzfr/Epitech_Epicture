@@ -250,25 +250,46 @@ class Favorite extends Component {
     render() {
         if(this.state.comment !== null) {
             return (<ScrollView>
-                <Button title='Retour' onPress={() => {this.setState(previousState => (
-                    {comment: null, currentImageId: null, newComment: null}
-                ))}}></Button>
-                <View>
-                    <Text>Ajouter un commentaire :</Text>
-                    <TextInput onChangeText={text => {
-                        this.setState({
-                            newComment: text
-                        });
-                    }}></TextInput>
-                    <Button title='Ajouter un commentaire' onPress={() => {
-                        this.addComment(this.state.currentImageId, this.state.newComment)
-                    }}></Button>
+                <View style={{flexDirection: 'row',backgroundColor:'#EAEAEA', width:'100%', height:30}}>
+                    <View style={{height: 25, width: 30}}>
+                        <TouchableOpacity title='Retour' onPress={() => {this.setState(previousState => (
+                            {comment: null, currentImageId: null, newComment: null}
+                        ))}}>
+
+                            <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowLeft.png')}/>
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={{fontWeight: 'bold', fontSize: 18, width: '100%', color:'black', left:'50%'}}>Comments</Text>
                 </View>
-                <Text>Comment</Text>
+                <View>
+                    <TextInput
+                        placeholder= 'Comment...'
+                        onChangeText={text => {
+                            this.setState({
+                                newComment: text
+                            });
+                        }}/>
+                    <TouchableOpacity style={{width: '100%', height: 30, backgroundColor: '#749FCD', justifyContent: 'center', alignSelf: 'center'}} title='Add a comment'
+                                      onPress={() => {
+                                          this.addComment(this.state.currentImageId, this.state.newComment)
+                                      }}>
+                        <Text style={{color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                            textAlign: 'center',}}>Add a comment</Text>
+                    </TouchableOpacity>
+                </View>
                 {this.state.comment['data'].map((comment) => {
-                    return(<Text>
-                        {comment.author} : {comment.comment}
-                    </Text>)
+                    return(
+                        <View style={{display: 'flex', width:'100%', height: 'auto', padding: '3%'}}>
+                            <View>
+                                <Text style={{fontSize: 17, fontWeight:"500", color:'#345C70'}}>
+                                    <Text style={{fontWeight:"bold"}}>{comment.author}</Text>
+                                    <Text style={{fontSize: 15, color: '#456F7F'}}>: {comment.comment}</Text>
+                                </Text>
+                            </View>
+                        </View>
+                    )
                 })}
             </ScrollView>);
         }else {
