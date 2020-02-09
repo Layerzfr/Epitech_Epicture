@@ -195,6 +195,21 @@ class Upload extends Component {
             return (
                 <LottieView source={require('../Assert/Animation/1798-check-animation.json')} autoPlay />
             )
+        } else {
+            return (
+                <View style={{top:'7%'}}>
+                    <TouchableOpacity style={styles.upload} onPress={this.selectFile.bind(this)}><Text style={styles.textUpload}>Upload</Text></TouchableOpacity>
+                    <View style={{bottom:'150%',zIndex:1, justifyContent: 'center', alignItems: 'center',}}>
+                        <View style={{top:'55%',justifyContent: 'center', alignItems: 'center', width: '70%', height: '70%'}}>
+                            <Image
+                                source={{uri: this.state.filePath.uri}}
+                                style={{zIndex:2, width: '90%', height: '90%'}}
+                            />
+                        </View>
+                        <Image style={{bottom:'10%',width: '40%', height: '40%'}} resizeMode="contain" source={require('../Assert/PNG/Upload.png')}/>
+                    </View>
+                </View>
+            )
         }
     }
 
@@ -228,16 +243,7 @@ class Upload extends Component {
                     <View>
                         <View style={{width: '100%', height: '70%', top:'1%'}}>
                             <Image style={{zIndex:0,width: '100%', height: '100%'}} resizeMode="contain" source={require('../Assert/PNG/UploadOutline.png')}/>
-                            <TouchableOpacity style={styles.upload} onPress={this.selectFile.bind(this)}><Text style={styles.textUpload}>Upload</Text></TouchableOpacity>
-                            <View style={{bottom:'150%',zIndex:1, justifyContent: 'center', alignItems: 'center',}}>
-                                <View style={{top:'55%',justifyContent: 'center', alignItems: 'center', width: '70%', height: '70%'}}>
-                                    <Image
-                                        source={{uri: this.state.filePath.uri}}
-                                        style={{zIndex:2, width: '90%', height: '90%'}}
-                                    />
-                                </View>
-                                <Image style={{bottom:'10%',width: '40%', height: '40%'}} resizeMode="contain" source={require('../Assert/PNG/Upload.png')}/>
-                            </View>
+                            {this.success()}
                         </View>
                         <Text style={{textAlign:'center',padding: "2%",fontSize: 20, fontWeight:"bold", color:'#699FD3'}}>
                             Titre:
@@ -254,7 +260,7 @@ class Upload extends Component {
                         />
                         {this.submit()}
                     </View>
-                    {this.success()}
+                    {/*{this.success()}*/}
                     {this.displayError()}
                 </View>
             );
