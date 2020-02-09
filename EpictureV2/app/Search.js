@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import {
-    ActivityIndicator,
+    ActivityIndicator, Button,
     Image,
     Picker,
     ScrollView,
     StyleSheet,
-    Text,
+    Text, TextInput,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 import Login from "./login";
 import {SearchBar} from "react-native-elements";
@@ -18,7 +18,8 @@ import Lightbox from 'react-native-lightbox';
 
 class Search extends Component {
 
-    state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all', loading: false,};
+    state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all', loading: false,
+        comment: null, newComment: null, currentImageId: null};
 
     constructor(props) {
         super(props);
@@ -27,6 +28,48 @@ class Search extends Component {
         ));
         this.timeout = 0;
     }
+
+    displayComment = (image) => {
+        console.log('image => ', image);
+        if(image !== undefined) {
+            fetch('https://api.imgur.com/3/gallery/'+image['id']+'/comments/best', {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.props.screenProps.token
+                },
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    console.log('SUCCESS', responseJson);
+                    this.setState(previousState => (
+                        {comment: responseJson, currentImageId: image['id']}
+                    ));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    };
+
+    addComment(imageId, comment) {
+        const data = new FormData();
+        data.append('comment', comment);
+        fetch('https://api.imgur.com/3/gallery/'+imageId+'/comment', {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token,
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
@@ -139,12 +182,11 @@ class Search extends Component {
                                     </Text>
                                 </View>
                                 <View style={{flex: 2, marginBottom: '1%', marginTop: '1%', paddingLeft:'3%',paddingRight:'3%', justifyContent: 'center', alignItems: 'flex-start',height:40}}>
-                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={image['showcomments'] = true}>
+                                    <TouchableOpacity style={{width:'100%', height:'100%'}} onPress={() => {this.displayComment(image)}}>
                                         <Text style={{fontSize: 16, fontWeight:"500", color:'#345C70'}}>
                                             Voir les {image['comment_count']} commentaires
                                         </Text>
                                     </TouchableOpacity>
-                                    {this.displayComment(image)}
                                 </View>
                                 <View style={{width: '100%', height: '0.6%', backgroundColor: '#345C70', opacity:0.2}}/>
                                 <View>
@@ -173,55 +215,91 @@ class Search extends Component {
     }
 
     render() {
-        return(
-            <View>
-                <SearchBar
-                            inputStyle={{backgroundColor: '#EAEAEA'}}
-                            containerStyle={styles.searchcontainer}
-                            inputContainerStyle={{backgroundColor: '#EAEAEA'}}
-                            searchIcon={{size:25}}
-                            placeholderTextColor={'#515151'}
-                            placeholder="Search..."
-                            onChangeText={this.searchImages}
-                            value={this.state.search}
-                />
-                <View style={styles.picker}>
-                    <Picker
-                        selectedValue={this.state.sort}
-                        style={styles.picker01}
-                        onValueChange={(itemValue, itemIndex) => {
-                            this.setState({sort: itemValue});
-                            if (this.state.search !== null) {
-                                this.searchImages(this.state.search);
-                            }
-                        }
-                        }>
-                        <Picker.Item label="Top" value="top" />
-                        <Picker.Item label="Viral" value="viral" />
-                        <Picker.Item label="Time" value="time" />
-                    </Picker>
-                    <Picker
-                        selectedValue={this.state.date}
-                        style={styles.picker02}
-                        onValueChange={(itemValue, itemIndex) => {
-                            this.setState({date: itemValue});
-                            if (this.state.search !== null) {
-                                this.searchImages(this.state.search);
-                            }
-                        }
-                        }>
-                        <Picker.Item label="Day" value="day" />
-                        <Picker.Item label="Week" value="week" />
-                        <Picker.Item label="Month" value="month" />
-                        <Picker.Item label="Year" value="year" />
-                        <Picker.Item label="All" value="all" />
-                    </Picker>
-                    <View style={{backgroundColor:'grey', width:'100%', height:3, position: 'absolute', bottom:0, opacity: 0.5}}/>
+        if (this.state.comment !== null) {
+            return (<ScrollView>
+                <Button title='Retour' onPress={() => {
+                    this.setState(previousState => (
+                        {comment: null, currentImageId: null, newComment: null}
+                    ))
+                }}></Button>
+                <View>
+                    <Text>Ajouter un commentaire :</Text>
+                    <TextInput onChangeText={text => {
+                        this.setState({
+                            newComment: text
+                        });
+                    }}></TextInput>
+                    <Button title='Ajouter un commentaire' onPress={() => {
+                        this.addComment(this.state.currentImageId, this.state.newComment)
+                    }}></Button>
                 </View>
-                {this.displaySearchImages()}
-            </View>
-        )
-    };
+                <Text>Comment</Text>
+                {this.state.comment['data'].map((comment) => {
+                    return (<Text>
+                        {comment.author} : {comment.comment}
+                    </Text>)
+                })}
+            </ScrollView>);
+        } else {
+            return (
+                <View>
+                    <SearchBar
+                        inputStyle={{backgroundColor: '#EAEAEA'}}
+                        containerStyle={styles.searchcontainer}
+                        inputContainerStyle={{backgroundColor: '#EAEAEA'}}
+                        searchIcon={{size: 25}}
+                        placeholderTextColor={'#515151'}
+                        placeholder="Search..."
+                        onChangeText={this.searchImages}
+                        value={this.state.search}
+                    />
+                    <View style={styles.picker}>
+                        <Picker
+                            selectedValue={this.state.sort}
+                            style={styles.picker01}
+                            onValueChange={(itemValue, itemIndex) => {
+                                this.setState({sort: itemValue});
+                                if (this.state.search !== null) {
+                                    this.searchImages(this.state.search);
+                                }
+                            }
+                            }>
+                            <Picker.Item label="Top" value="top"/>
+                            <Picker.Item label="Viral" value="viral"/>
+                            <Picker.Item label="Time" value="time"/>
+                        </Picker>
+                        <Picker
+                            selectedValue={this.state.date}
+                            style={styles.picker02}
+                            onValueChange={(itemValue, itemIndex) => {
+                                this.setState({date: itemValue});
+                                if (this.state.search !== null) {
+                                    this.searchImages(this.state.search);
+                                }
+                            }
+                            }>
+                            <Picker.Item label="Day" value="day"/>
+                            <Picker.Item label="Week" value="week"/>
+                            <Picker.Item label="Month" value="month"/>
+                            <Picker.Item label="Year" value="year"/>
+                            <Picker.Item label="All" value="all"/>
+                        </Picker>
+                        <View style={{
+                            backgroundColor: 'grey',
+                            width: '100%',
+                            height: 3,
+                            position: 'absolute',
+                            bottom: 0,
+                            opacity: 0.5
+                        }}/>
+                    </View>
+                    {this.displaySearchImages()}
+                </View>
+            )
+        }
+        ;
+    }
+
     unfav = (id) => {
 
         fetch('https://api.imgur.com/3/album/'+id+'/favorite', {
