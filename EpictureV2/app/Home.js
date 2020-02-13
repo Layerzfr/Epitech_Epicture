@@ -17,6 +17,10 @@ import {WebView} from "react-native-webview";
 import ImagePicker from 'react-native-image-picker';
 import soundImg from '../Assert/Icon/Heart/heart.png';
 import muteImg from '../Assert/Icon/Heart/heart-outline.png';
+import arrowUp from '../Assert/Icon/Arrow/arrow.png';
+import isUp from '../Assert/Icon/Arrow/arrowUpGreen.png';
+import arrowDown from '../Assert/Icon/Arrow/arrowDown.png';
+import isDown from '../Assert/Icon/Arrow/arrowDownRed.png';
 import Comments from "./Comments";
 import Lightbox from 'react-native-lightbox';
 import styles from "react-native-webview/lib/WebView.styles";
@@ -24,7 +28,7 @@ import styles from "react-native-webview/lib/WebView.styles";
 class Home extends Component {
 
     state = {images: null, token: null, current: 'follow', currentEnd: 2, maxImage: 2, filePath: {},  showSoundImg: true, loading: false,
-            comment: null, newComment: null, currentImageId: null,
+            comment: null, newComment: null, currentImageId: null, showUp: true, showDown: false,
     };
 
     constructor (props) {
@@ -200,7 +204,6 @@ class Home extends Component {
                 {this.state.images.map((image) => {
                     if(count <= this.state.maxImage) {
                         image['showcomments'] = false;
-                        console.log(image);
                         count++;
                         return (
                             <View>
@@ -233,11 +236,18 @@ class Home extends Component {
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:10 , left:200}}>
                                             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
-                                                this.vote("up",image['id']);
+                                                this.setState({ showUp: !this.state.showUp });
+                                                if(image['vote'] === 'up') {
+                                                    image['vote'] = null;
+                                                    this.vote("veto",image['id']);
+                                                } else {
+                                                    image['vote'] = 'up';
+                                                    this.vote("up",image['id']);
+                                                }
 
                                             }}>
                                                 <View style={{height: 25, width: 19}}>
-                                                    <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrow.png')}/>
+                                                    {this.renderUp(image['vote'])}
                                                 </View>
                                                 <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
                                                     {image['ups']}
@@ -246,10 +256,17 @@ class Home extends Component {
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:37 , left:300}}>
                                             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
-                                                this.vote("down",image['id']);
+                                                this.setState({ showDown: !this.state.showDown });
+                                                if(image['vote'] === 'down') {
+                                                    image['vote'] = null;
+                                                    this.vote("veto",image['id']);
+                                                } else {
+                                                    image['vote'] = 'down';
+                                                    this.vote("down",image['id']);
+                                                }
                                             }}>
                                                 <View style={{height: 25, width: 19}}>
-                                                    <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>
+                                                    {this.renderDown(image['vote'])}
                                                 </View>
                                                 <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
                                                     {image['downs']}
@@ -388,6 +405,28 @@ class Home extends Component {
 
             );
         }
+    }
+
+    renderUp(vote) {
+        if(vote === "up") {
+            var imgSource = isUp;
+        } else {
+            var imgSource = arrowUp;
+        }
+        return (
+            <Image style={{height: '100%', width: '100%'}} source={imgSource}/>
+            );
+    }
+
+    renderDown(vote) {
+        if(vote === "down") {
+            var imgSource = isDown;
+        } else {
+            var imgSource = arrowDown;
+        }
+        return (
+            <Image style={{height: '100%', width: '100%'}} source={imgSource}/>
+        );
     }
 
     renderImage(isFavorite) {

@@ -15,11 +15,15 @@ import soundImg from "../Assert/Icon/Heart/heart.png";
 import muteImg from "../Assert/Icon/Heart/heart-outline.png";
 import Comments from "./Comments";
 import Lightbox from 'react-native-lightbox';
+import arrowUp from '../Assert/Icon/Arrow/arrow.png';
+import isUp from '../Assert/Icon/Arrow/arrowUpGreen.png';
+import arrowDown from '../Assert/Icon/Arrow/arrowDown.png';
+import isDown from '../Assert/Icon/Arrow/arrowDownRed.png';
 
 class Search extends Component {
 
     state = {search: null, token: null, maxImage: 2, sort: 'viral', date: 'all', loading: false,
-        comment: null, newComment: null, currentImageId: null};
+        comment: null, newComment: null, currentImageId: null, showUp: true, showDown: false,};
 
     constructor(props) {
         super(props);
@@ -159,20 +163,43 @@ class Search extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:10 , left:200}}>
-                                            <View style={{height: 25, width: 19}}>
-                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrow.png')}/>
-                                            </View>
-                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
-                                                {image['ups']}
-                                            </Text>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.setState({ showUp: !this.state.showUp });
+                                                if(image['vote'] === 'up') {
+                                                    image['vote'] = null;
+                                                    this.vote("veto",image['id']);
+                                                } else {
+                                                    image['vote'] = 'up';
+                                                    this.vote("up",image['id']);
+                                                }
+
+                                            }}>
+                                                <View style={{height: 25, width: 19}}>
+                                                    {this.renderUp(image['vote'])}
+                                                </View>
+                                                <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                    {image['ups']}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:37 , left:300}}>
-                                            <View style={{height: 25, width: 19}}>
-                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>
-                                            </View>
-                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
-                                                {image['downs']}
-                                            </Text>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.setState({ showDown: !this.state.showDown });
+                                                if(image['vote'] === 'down') {
+                                                    image['vote'] = null;
+                                                    this.vote("veto",image['id']);
+                                                } else {
+                                                    image['vote'] = 'down';
+                                                    this.vote("down",image['id']);
+                                                }
+                                            }}>
+                                                <View style={{height: 25, width: 19}}>
+                                                    {this.renderDown(image['vote'])}
+                                                </View>
+                                                <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                    {image['downs']}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 </View>
@@ -337,6 +364,49 @@ class Search extends Component {
                 console.error(error);
             });
     };
+
+    vote = (vote, id) => {
+        let token = this.state.token;
+        let username = this.props.screenProps.home['url'];
+        let page = 0;
+        let favoritesSort = 'newest';
+
+        fetch('https://api.imgur.com/3/gallery/'+id+'/vote/'+vote, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS ', responseJson);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+    renderUp(vote) {
+        if(vote === "up") {
+            var imgSource = isUp;
+        } else {
+            var imgSource = arrowUp;
+        }
+        return (
+            <Image style={{height: '100%', width: '100%'}} source={imgSource}/>
+        );
+    }
+
+    renderDown(vote) {
+        if(vote === "down") {
+            var imgSource = isDown;
+        } else {
+            var imgSource = arrowDown;
+        }
+        return (
+            <Image style={{height: '100%', width: '100%'}} source={imgSource}/>
+        );
+    }
+
     renderImage(isFavorite) {
         var imgSource = isFavorite? soundImg : muteImg;
         return (
