@@ -154,7 +154,7 @@ class Profile extends Component {
                                             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
                                                 this.setState({ showSoundImg: !this.state.showSoundImg });
                                                 image['favorite'] = !image['favorite'];
-                                                this.unfav(image['id']);
+                                                // this.unfav(image['id']);
                                             }}>
                                                 {this.renderImage(image['favorite'])}
                                                 <View style={{top: 18}}>
