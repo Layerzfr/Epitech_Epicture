@@ -72,6 +72,26 @@ class Home extends Component {
             });
     };
 
+    vote = (vote, id) => {
+        let token = this.state.token;
+        let username = this.props.screenProps.home['url'];
+        let page = 0;
+        let favoritesSort = 'newest';
+
+        fetch('https://api.imgur.com/3/gallery/'+id+'/vote/'+vote, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + this.props.screenProps.token
+            },
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log('SUCCESS ', responseJson);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
     showAvatar(username){
         let token = this.state.token;
         let page = 0;
@@ -179,7 +199,8 @@ class Home extends Component {
             }}>
                 {this.state.images.map((image) => {
                     if(count <= this.state.maxImage) {
-                        image['showcomments'] = false
+                        image['showcomments'] = false;
+                        console.log(image);
                         count++;
                         return (
                             <View>
@@ -208,20 +229,29 @@ class Home extends Component {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:10 , left:200}}>
-                                            <View style={{height: 25, width: 19}}>
-                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrow.png')}/>
-                                            </View>
-                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
-                                                {image['ups']}
-                                            </Text>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.vote("up",image['id']);
+
+                                            }}>
+                                                <View style={{height: 25, width: 19}}>
+                                                    <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrow.png')}/>
+                                                </View>
+                                                <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                    {image['ups']}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={{display: 'flex', flexDirection:'row', bottom:37 , left:300}}>
-                                            <View style={{height: 25, width: 19}}>
-                                                <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>
-                                            </View>
-                                            <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
-                                                {image['downs']}
-                                            </Text>
+                                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} activeOpacity={1} onPress={() => {
+                                                this.vote("down",image['id']);
+                                            }}>
+                                                <View style={{height: 25, width: 19}}>
+                                                    <Image style={{height: '100%', width: '100%'}} source={require('../Assert/Icon/Arrow/arrowDown.png')}/>
+                                                </View>
+                                                <Text style={{fontSize: 20, marginTop: 1, left: 8, fontWeight:"500", color:'#689FD1'}}>
+                                                    {image['downs']}
+                                                </Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 </View>
