@@ -133,10 +133,11 @@ class Search extends Component {
                         count++;
                         return (
                             <View>
-                                <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, padding: '1%', backgroundColor: '#f3f3f3'}}>
                                     <Lightbox>
                                         <Image
-                                            style={{ height: '100%', width: 'auto' }}
+                                            resizeMode={'contain'}
+                                            style={{ height: '100%', width: '100%' }}
                                             source={{ uri: 'https://i.imgur.com/' + image['cover'] + '.jpg' }}
                                         />
                                     </Lightbox>

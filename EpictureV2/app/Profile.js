@@ -139,10 +139,11 @@ class Profile extends Component {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={{flex: 1, width: 'auto', aspectRatio: 1}}>
+                                <View style={{flex: 1, width: 'auto', aspectRatio: 1, padding: '1%', backgroundColor: '#f3f3f3'}}>
                                     <Lightbox>
                                         <Image
-                                            style={{ height: '100%', width: 'auto' }}
+                                            resizeMode={'contain'}
+                                            style={{ height: '100%', width: '100%' }}
                                             source={{ uri: 'https://i.imgur.com/' + image['id'] + '.jpg' }}
                                         />
                                     </Lightbox>
